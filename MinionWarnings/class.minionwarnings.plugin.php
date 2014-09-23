@@ -30,7 +30,7 @@ $PluginInfo['MinionWarnings'] = array(
  *  1.0     Release
  *
  * @author Tim Gunter <tim@vanillaforums.com>
- * @package misc
+ * @package minion
  */
 class MinionWarnings extends Gdn_Plugin {
 

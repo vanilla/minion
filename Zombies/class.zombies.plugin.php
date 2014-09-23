@@ -1,22 +1,8 @@
-<?php if (!defined('APPLICATION')) exit();
+<?php
 
 /**
- * Zombies Plugin
- *
- * This plugin uses Minion, Reactions, and Badges to create a zombies game.
- *
- * THE GAME
- *
- *
- *
- *
- * Changes:
- *  1.0     Release
- *
- * @author Tim Gunter <tim@vanillaforums.com>
  * @copyright 2003 Vanilla Forums, Inc
  * @license Proprietary
- * @package misc
  */
 
 $PluginInfo['Kidnappers'] = array(
@@ -38,6 +24,22 @@ $PluginInfo['Kidnappers'] = array(
    )
 );
 
+/**
+ * Zombies Plugin
+ *
+ * This plugin uses Minion, Reactions, and Badges to create a zombies game.
+ *
+ * THE GAME
+ *
+ *
+ *
+ *
+ * Changes:
+ *  1.0     Release
+ *
+ * @author Tim Gunter <tim@vanillaforums.com>
+ * @package minion
+ */
 class ZombiesPlugin extends Gdn_Plugin {
 
    /* MODELS / OBJECT REFERENCES */

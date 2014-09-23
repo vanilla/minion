@@ -1,4 +1,27 @@
-<?php if (!defined('APPLICATION')) exit();
+<?php
+
+/**
+ * @copyright 2003 Vanilla Forums, Inc
+ * @license Proprietary
+ */
+
+$PluginInfo['Valentines'] = array(
+   'Name' => 'Minion: Valentines',
+   'Description' => "Valentines day game and badges.",
+   'Version' => '1.0.2',
+   'RequiredApplications' => array(
+      'Vanilla' => '2.1a',
+      'Reputation' => '1.0'
+    ),
+   'RequiredPlugins' => array(
+      'Minion' => '1.12',
+      'Reactions' => '1.2.1'
+   ),
+   'MobileFriendly' => TRUE,
+   'Author' => "Tim Gunter",
+   'AuthorEmail' => 'tim@vanillaforums.com',
+   'AuthorUrl' => 'http://vanillaforums.com'
+);
 
 /**
  * Valentines Plugin
@@ -36,29 +59,8 @@
  *  1.1     Conversations integration
  *
  * @author Tim Gunter <tim@vanillaforums.com>
- * @copyright 2003 Vanilla Forums, Inc
- * @license Proprietary
- * @package misc
+ * @package minion
  */
-
-$PluginInfo['Valentines'] = array(
-   'Name' => 'Minion: Valentines',
-   'Description' => "Valentines day game and badges.",
-   'Version' => '1.0.2',
-   'RequiredApplications' => array(
-      'Vanilla' => '2.1a',
-      'Reputation' => '1.0'
-    ),
-   'RequiredPlugins' => array(
-      'Minion' => '1.12',
-      'Reactions' => '1.2.1'
-   ),
-   'MobileFriendly' => TRUE,
-   'Author' => "Tim Gunter",
-   'AuthorEmail' => 'tim@vanillaforums.com',
-   'AuthorUrl' => 'http://vanillaforums.com'
-);
-
 class ValentinesPlugin extends Gdn_Plugin {
 
    /**

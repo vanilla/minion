@@ -1,27 +1,8 @@
-<?php if (!defined('APPLICATION')) exit();
+<?php
 
 /**
- * Kidnappers Plugin
- *
- * This plugin uses Minion, Reactions, and Badges to create a kidnapping game.
- *
- * THE GAME
- *
- *
- *
- *
- * Changes:
- *  1.0     Release
- *  1.1     Add reaction icons
- *  1.2     Add kidnapper mini tutorial
- *  1.3     Change wording to hint at forumer
- *  1.4     Added hints and new CSS for mobile
- *  1.5     Show informants differently
- *
- * @author Tim Gunter <tim@vanillaforums.com>
  * @copyright 2003 Vanilla Forums, Inc
  * @license Proprietary
- * @package misc
  */
 
 $PluginInfo['Kidnappers'] = array(
@@ -42,6 +23,27 @@ $PluginInfo['Kidnappers'] = array(
    'AuthorUrl' => 'http://vanillaforums.com'
 );
 
+/**
+ * Kidnappers Plugin
+ *
+ * This plugin uses Minion, Reactions, and Badges to create a kidnapping game.
+ *
+ * THE GAME
+ *
+ *
+ *
+ *
+ * Changes:
+ *  1.0     Release
+ *  1.1     Add reaction icons
+ *  1.2     Add kidnapper mini tutorial
+ *  1.3     Change wording to hint at forumer
+ *  1.4     Added hints and new CSS for mobile
+ *  1.5     Show informants differently
+ *
+ * @author Tim Gunter <tim@vanillaforums.com>
+ * @package minion
+ */
 class KidnappersPlugin extends Gdn_Plugin {
 
    /**

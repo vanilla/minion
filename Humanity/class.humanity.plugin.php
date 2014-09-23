@@ -1,18 +1,8 @@
-<?php if (!defined('APPLICATION')) exit();
+<?php
 
 /**
- * Cards Against Humanity Plugin
- *
- * This plugin uses Minion, Reactions, and Badges to implement Cards Against
- * Humanity as a forum game.
- *
- * Changes:
- *  1.0     Release
- *
- * @author Tim Gunter <tim@vanillaforums.com>
  * @copyright 2003 Vanilla Forums, Inc
  * @license Proprietary
- * @package misc
  */
 
 $PluginInfo['Humanity'] = array(
@@ -34,6 +24,18 @@ $PluginInfo['Humanity'] = array(
    'AuthorUrl' => 'http://vanillaforums.com'
 );
 
+/**
+ * Cards Against Humanity Plugin
+ *
+ * This plugin uses Minion, Reactions, and Badges to implement Cards Against
+ * Humanity as a forum game.
+ *
+ * Changes:
+ *  1.0     Release
+ *
+ * @author Tim Gunter <tim@vanillaforums.com>
+ * @package minion
+ */
 class HumanityPlugin extends Gdn_Plugin {
 
    /**

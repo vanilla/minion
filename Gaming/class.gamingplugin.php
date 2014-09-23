@@ -33,7 +33,7 @@ $PluginInfo['Gaming'] = array(
  *  1.0     Release
  *
  * @author Tim Gunter <tim@vanillaforums.com>
- * @package misc
+ * @package minion
  */
 class GamingPlugin extends Gdn_Plugin {
 

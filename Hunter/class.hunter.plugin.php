@@ -1,22 +1,8 @@
-<?php if (!defined('APPLICATION')) exit();
+<?php
 
 /**
- * Hunter Plugin
- *
- * This plugin uses Minion, Reactions, and Badges to create a 'Hunt'. One or
- * more users are targetted by "the law" (minion's persona) and are hunted
- * throughout the forum.
- *
- * Their fellow posters decide if they live or die by either "reporting" them
- * to the authorities, or "hiding" them.
- *
- * Changes:
- *  1.0     Release
- *
- * @author Tim Gunter <tim@vanillaforums.com>
  * @copyright 2003 Vanilla Forums, Inc
  * @license Proprietary
- * @package misc
  */
 
 $PluginInfo['Hunter'] = array(
@@ -37,6 +23,22 @@ $PluginInfo['Hunter'] = array(
    'AuthorUrl' => 'http://vanillaforums.com'
 );
 
+/**
+ * Hunter Plugin
+ *
+ * This plugin uses Minion, Reactions, and Badges to create a 'Hunt'. One or
+ * more users are targetted by "the law" (minion's persona) and are hunted
+ * throughout the forum.
+ *
+ * Their fellow posters decide if they live or die by either "reporting" them
+ * to the authorities, or "hiding" them.
+ *
+ * Changes:
+ *  1.0     Release
+ *
+ * @author Tim Gunter <tim@vanillaforums.com>
+ * @package minion
+ */
 class HunterPlugin extends Gdn_Plugin {
 
    /**

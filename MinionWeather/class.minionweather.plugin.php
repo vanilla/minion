@@ -1,17 +1,8 @@
-<?php if (!defined('APPLICATION')) exit();
+<?php
 
 /**
- * Minion Weather Plugin
- *
- * Weather command hooks.
- *
- * Changes:
- *  1.0     Release
- *
- * @author Tim Gunter <tim@vanillaforums.com>
  * @copyright 2003 Vanilla Forums, Inc
  * @license Proprietary
- * @package misc
  */
 
 $PluginInfo['MinionWeather'] = array(
@@ -30,6 +21,17 @@ $PluginInfo['MinionWeather'] = array(
    'AuthorUrl' => 'http://vanillaforums.com'
 );
 
+/**
+ * Minion Weather Plugin
+ *
+ * Weather command hooks.
+ *
+ * Changes:
+ *  1.0     Release
+ *
+ * @author Tim Gunter <tim@vanillaforums.com>
+ * @package minion
+ */
 class MinionWeatherPlugin extends Gdn_Plugin {
 
 

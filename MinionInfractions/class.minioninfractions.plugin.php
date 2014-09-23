@@ -30,7 +30,7 @@ $PluginInfo['MinionInfractions'] = array(
  *  1.0     Release
  *
  * @author Tim Gunter <tim@vanillaforums.com>
- * @package misc
+ * @package minion
  */
 class MinionInfractions extends Gdn_Plugin {
 

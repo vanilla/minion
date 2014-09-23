@@ -35,7 +35,7 @@ $PluginInfo['ThreadCycle'] = array(
  *  1.4     Add early bet bonus
  *
  * @author Tim Gunter <tim@vanillaforums.com>
- * @package internal
+ * @package minion
  */
 class ThreadCyclePlugin extends Gdn_Plugin {
 

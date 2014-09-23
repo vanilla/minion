@@ -58,7 +58,7 @@ $PluginInfo['Minion'] = array(
  *  2.1.1   Fix newline handling
  *
  * @author Tim Gunter <tim@vanillaforums.com>
- * @package misc
+ * @package minion
  */
 class MinionPlugin extends Gdn_Plugin {
 
