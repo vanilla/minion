@@ -1,4 +1,4 @@
 minion
 ======
 
-Minion plugin and games
+Private Minion plugins

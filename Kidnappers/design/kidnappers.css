@@ -1,0 +1,61 @@
+.KidnappersHint {
+   white-space: pre;
+   font-family: 'Courier New', monospace;
+   font-size: 11px;
+   background: #f7f7f7;
+   border: 1px solid #acacac;
+   color: black;
+   padding: 5px;
+   line-height: 1.2;
+}
+
+.InformMessage .KidnappersHint {
+   background: #353535;
+   border: 1px solid #696969;
+}
+
+.KidnappersMuffled {
+   color: #acacac;
+}
+
+.Item.Kidnapper .AuthorWrap .PhotoWrap:after{
+   content: '';
+   position: absolute;
+   width: 100px;
+   height: 124px;
+   top: 10px;
+   left: 52px;
+   background: transparent url('images/mask.png') no-repeat top left;
+}
+
+.Item.Informant .AuthorWrap .PhotoWrap:after{
+   content: '';
+   position: absolute;
+   width: 100px;
+   height: 124px;
+   top: 10px;
+   left: 52px;
+   background: transparent url('images/informant.png') no-repeat top left;
+}
+
+.Item.Kidnapped .AuthorWrap .PhotoWrap:after{
+   content: '';
+   position: absolute;
+   width: 106px;
+   height: 79px;
+   top: 10px;
+   left: 42px;
+   background: transparent url('images/tied.png') no-repeat top left;
+}
+
+.ReactSprite.ReactKidnapper {
+   background-position: -101px -5px;
+}
+
+.ReactSprite.ReactRescue {
+   background-position: -244px -53px;
+}
+
+.ReactSprite.ReactKidnap {
+   background-position: -149px -5px;
+}

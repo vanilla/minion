@@ -1,0 +1,114 @@
+[
+    {
+        "id": "38173a4c4773e0b7",
+        "text": "We got the third rope, now where's the fourth?",
+        "expansion": "neindy",
+        "type": "Q",
+        "answers": 1
+    },
+    {
+        "id": "84af8ba9418833ba",
+        "text": "Tonights main event, _ vs. _.",
+        "expansion": "neindy",
+        "type": "Q",
+        "answers": 2
+    },
+    {
+        "id": "ff9ab723b8179139",
+        "text": "Tackle, Dropdown, _.",
+        "expansion": "neindy",
+        "type": "Q",
+        "answers": 1
+    },
+    {
+        "id": "f21809ac867ed37c",
+        "text": "Christopher Daniels is late on his _.",
+        "expansion": "neindy",
+        "type": "Q",
+        "answers": 1
+    },
+    {
+        "id": "b97e76be5573a756",
+        "text": "Instead of booking _, they should have booked _.",
+        "expansion": "neindy",
+        "type": "Q",
+        "answers": 2
+    },
+    {
+        "id": "378978b594489a18",
+        "text": "Genius is 10% inspiration, 90% _.",
+        "expansion": "neindy",
+        "type": "Q",
+        "answers": 1
+    },
+    {
+        "id": "be3a1ba605ab4fa6",
+        "text": "They found _ in the dumpster behind _.",
+        "expansion": "neindy",
+        "type": "Q",
+        "answers": 2
+    },
+    {
+        "id": "0eb72e48c00cacee",
+        "text": "The best thing I ever got for Christmas was _.",
+        "expansion": "neindy",
+        "type": "Q",
+        "answers": 1
+    },
+    {
+        "id": "8744d90767409f45",
+        "text": "There's no crying in _.",
+        "expansion": "neindy",
+        "type": "Q",
+        "answers": 1
+    },
+    {
+        "id": "f8caa2e0b685654b",
+        "text": "Mastodon! Pterodactyl! Triceratops! Sabretooth Tiger! _!",
+        "expansion": "neindy",
+        "type": "Q",
+        "answers": 1
+    },
+    {
+        "id": "b5e8a88d60b479e6",
+        "text": "Don't eat the _.",
+        "expansion": "neindy",
+        "type": "Q",
+        "answers": 1
+    },
+    {
+        "id": "1f593e6cac7be4c3",
+        "text": "He did _ with the _!?!",
+        "expansion": "neindy",
+        "type": "Q",
+        "answers": 2
+    },
+    {
+        "id": "38b7636301fa8235",
+        "text": "SOOOOO hot, want to touch the _.",
+        "expansion": "neindy",
+        "type": "Q",
+        "answers": 1
+    },
+    {
+        "id": "0685421de011f22c",
+        "text": "Stop looking at me _!",
+        "expansion": "neindy",
+        "type": "Q",
+        "answers": 1
+    },
+    {
+        "id": "a44613aadb94139e",
+        "text": "I'm cuckoo for _ puffs.",
+        "expansion": "neindy",
+        "type": "Q",
+        "answers": 1
+    },
+    {
+        "id": "10240a4a2ae798b9",
+        "text": "Silly rabbit, _ are for kids.",
+        "expansion": "neindy",
+        "type": "Q",
+        "answers": 1
+    }
+]

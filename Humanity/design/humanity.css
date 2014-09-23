@@ -1,0 +1,28 @@
+.CardAgainstHumanity {
+  width: 180px;
+  border-radius: 5px;
+  border: 3px solid black;
+  padding: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  min-height: 220px;
+  margin-right: 10px;
+  line-height: 1.4;
+  display: inline-block;
+  background-color: white;
+  background-repeat: no-repeat;
+  background-position: bottom right;
+}
+.CardAgainstHumanity.Answer {
+  color: black;
+  background-color: white;
+  background-image: url("images/cah-white.gif");
+}
+.CardAgainstHumanity.Question {
+  color: white;
+  background-color: black;
+  background-image: url("images/cah-black.gif");
+}
+.CardAgainstHumanity .Expansion {
+  display: none;
+}

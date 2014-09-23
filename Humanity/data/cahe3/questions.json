@@ -1,0 +1,177 @@
+[
+    {
+        "id": "1bbd41c8b15f1c47",
+        "text": "A successful job interview begins with a firm handshake and ends with _.",
+        "expansion": "cahe3",
+        "type": "Q",
+        "answers": 1
+    },
+    {
+        "id": "b43e60a8dbb13a48",
+        "text": "Lovin' you is easy 'cause you're _.",
+        "expansion": "cahe3",
+        "type": "Q",
+        "answers": 1
+    },
+    {
+        "id": "ad8c778149213628",
+        "text": "My life is ruled by a vicious cycle of _ and _.",
+        "expansion": "cahe3",
+        "type": "Q",
+        "answers": 2
+    },
+    {
+        "id": "11be98197234a824",
+        "text": "The blind date was going horribly until we discovered our shared interest in _.",
+        "expansion": "cahe3",
+        "type": "Q",
+        "answers": 1
+    },
+    {
+        "id": "5ef1f6e0dbaac398",
+        "text": "_. Awesome in theory, kind of a mess in practice.",
+        "expansion": "cahe3",
+        "type": "Q",
+        "answers": 1
+    },
+    {
+        "id": "9143f26b32fe2eaf",
+        "text": "I'm not like the rest of you. I'm too rich and busy for _.",
+        "expansion": "cahe3",
+        "type": "Q",
+        "answers": 1
+    },
+    {
+        "id": "37ba1ff154a90c70",
+        "text": "In the seventh circle of Hell, sinners must endure _ for all eternity.",
+        "expansion": "cahe3",
+        "type": "Q",
+        "answers": 1
+    },
+    {
+        "id": "f5f87918b210810b",
+        "text": "_: Hours of fun. Easy to use. Perfect for _!",
+        "expansion": "cahe3",
+        "type": "Q",
+        "answers": 2
+    },
+    {
+        "id": "84a852d07f61cf55",
+        "text": "What left this stain on my couch?",
+        "expansion": "cahe3",
+        "type": "Q",
+        "answers": 1
+    },
+    {
+        "id": "751a1e1a3bcfa823",
+        "text": "Call the law offices of Goldstein & Goldstein, because no one should have to tolerate _ in the workplace.",
+        "expansion": "cahe3",
+        "type": "Q",
+        "answers": 1
+    },
+    {
+        "id": "cfd2450f0a21e73b",
+        "text": "When you get right down to it, _ is just _.",
+        "expansion": "cahe3",
+        "type": "Q",
+        "answers": 2
+    },
+    {
+        "id": "2d5fece76725c766",
+        "text": "Turns out that _-Man was neither the hero we needed nor wanted.",
+        "expansion": "cahe3",
+        "type": "Q",
+        "answers": 1
+    },
+    {
+        "id": "730237b378381660",
+        "text": "As part of his daily regimen, Anderson Cooper sets aside 15 minutes for _.",
+        "expansion": "cahe3",
+        "type": "Q",
+        "answers": 1
+    },
+    {
+        "id": "f2034589df9d2ab3",
+        "text": "Money can't buy me love, but it can buy me _.",
+        "expansion": "cahe3",
+        "type": "Q",
+        "answers": 1
+    },
+    {
+        "id": "ed774cd014de5fcc",
+        "text": "With enough time and pressure, _ will turn into _.",
+        "expansion": "cahe3",
+        "type": "Q",
+        "answers": 2
+    },
+    {
+        "id": "29da273f007c256b",
+        "text": "And what did you bring for show and tell?",
+        "expansion": "cahe3",
+        "type": "Q",
+        "answers": 1
+    },
+    {
+        "id": "088369aa8923a596",
+        "text": "During high school, I never really fit in until I found _ club.",
+        "expansion": "cahe3",
+        "type": "Q",
+        "answers": 1
+    },
+    {
+        "id": "8fd394be23b4d20d",
+        "text": "Hey, baby, come back to my place and I'll show you _.",
+        "expansion": "cahe3",
+        "type": "Q",
+        "answers": 1
+    },
+    {
+        "id": "ce2aa4eeffb4147a",
+        "text": "After months of practice with _, I think I'm finally ready for _.",
+        "expansion": "cahe3",
+        "type": "Q",
+        "answers": 2
+    },
+    {
+        "id": "2c91d6c029ab21fa",
+        "text": "To prepare for his upcoming role, Daniel Day-Lewis immersed himself in the world of _.",
+        "expansion": "cahe3",
+        "type": "Q",
+        "answers": 1
+    },
+    {
+        "id": "93075ebd2bfe024e",
+        "text": "Finally! A service that delivers _ right to your door.",
+        "expansion": "cahe3",
+        "type": "Q",
+        "answers": 1
+    },
+    {
+        "id": "677b15bcf2b70ebf",
+        "text": "My gym teacher got fired for adding _ to the obstacle course.",
+        "expansion": "cahe3",
+        "type": "Q",
+        "answers": 1
+    },
+    {
+        "id": "f15ab15859e700f1",
+        "text": "Having problems with _? Try _!",
+        "expansion": "cahe3",
+        "type": "Q",
+        "answers": 2
+    },
+    {
+        "id": "15b489496c4cf464",
+        "text": "As part of his contract, Prince won't perform without _ in his dressing room.",
+        "expansion": "cahe3",
+        "type": "Q",
+        "answers": 1
+    },
+    {
+        "id": "2412dc8e7430558d",
+        "text": "Listen, son. If you want to get involved with _, I won't stop you. Just steer clear of _.",
+        "expansion": "cahe3",
+        "type": "Q",
+        "answers": 2
+    }
+]
