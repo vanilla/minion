@@ -4,23 +4,23 @@
  * @copyright 2003 Vanilla Forums, Inc
  * @license Proprietary
  */
-$PluginInfo['HotPotato'] = array(
+$PluginInfo['HotPotato'] = [
     'Name' => 'Minion: HotPotato',
     'Description' => "HotPotato game and badges.",
     'Version' => '1.0a',
-    'RequiredApplications' => array(
+    'RequiredApplications' => [
         'Vanilla' => '2.1a',
         'Reputation' => '1.0'
-    ),
-    'RequiredPlugins' => array(
+    ],
+    'RequiredPlugins' => [
         'Minion' => '1.12',
         'Reactions' => '1.2.1'
-    ),
-    'MobileFriendly' => TRUE,
+    ],
+    'MobileFriendly' => true,
     'Author' => "Tim Gunter",
     'AuthorEmail' => 'tim@vanillaforums.com',
     'AuthorUrl' => 'http://vanillaforums.com'
-);
+];
 
 /**
  * HotPotato Plugin
@@ -28,15 +28,44 @@ $PluginInfo['HotPotato'] = array(
  * This plugin uses Minion, Reactions, and Badges to create a forum game that
  * resembles Hot Potato.
  *
+ * Badgers:
+ *
+ *  Typhoid Mary - Take a potato from one category to another
+ *  Billy the Kid - Pass a potato in under 60 seconds
+ *  Hurt Locker - Receive a potato with less than 30 seconds remaining on the clock
+ *  EOD - Dispose of a potato which had an expiry under 30 seconds
+ *  Many Hands - Be part of a potato chain that hits 100 people
+ *  Potato Farmer - Receive 10 potatoes
+ *  Hospital Pass - Pass a potato that expires and causes the recipient to go to jail
+ *
  * Changes:
  *  1.0     Release
  *
  * @author Tim Gunter <tim@vanillaforums.com>
- * @package misc
+ * @package minion
+ * @subpackage hotpotato
  */
 class HotPotatoPlugin extends Gdn_Plugin {
 
     const POTATO_KEY = 'minion.hotpotato.potato.%s';
+
+    const POTATO_CHECK_FREQ = 120;
+    const POTATO_CHECK_KEY = 'minion.hotpotato.check';
+
+    protected $throws = [
+        'flings',
+        'throws',
+        'hurls',
+        'tosses',
+        'lobs',
+        'heaves',
+        'punts',
+        'catapults',
+        'chucks',
+        'launches',
+        'propels',
+        'slings'
+    ];
 
     /**
      * List of known potatoes
@@ -45,14 +74,26 @@ class HotPotatoPlugin extends Gdn_Plugin {
     protected $potatoes;
 
     /**
+     * Is HotPotato enabled?
+     * @var boolean
+     */
+    protected $enabled;
+
+    /**
      * Startup configuration
      *
      */
     public function __construct() {
         parent::__construct();
 
+        $this->enabled = C('Plugins.HotPotato.Enabled', true);
         $this->potatoes = [];
     }
+
+    /*
+     * COMMAND INTERFACE
+     *
+     */
 
     /**
      * Hook for E:Token from MinionPlugin
@@ -67,20 +108,23 @@ class HotPotatoPlugin extends Gdn_Plugin {
         $state = &$sender->EventArguments['State'];
 
         // Start hot potato
-        if (!$state['Method'] && in_array($state['CompareToken'], array('toss'))) {
+        if (!$state['Method'] && in_array($state['CompareToken'], [
+            'toss',
+            'lob'
+        ])) {
             $sender->consume($state, 'Method', 'hotpotato');
         }
 
         // Get potato name
         if ($state['Method'] == 'hotpotato') {
-            if (in_array($state['CompareToken'], array('a'))) {
-                $sender->consume($state, 'Gather', array(
+            if (in_array($state['CompareToken'], ['a'])) {
+                $sender->consume($state, 'Gather', [
                     'Node' => 'Potato',
                     'Type' => 'phrase',
                     'Delta' => '',
                     'Terminator' => true,
                     'Boundary' => ['to', 'at']
-                ));
+                ]);
             }
         }
     }
@@ -105,7 +149,7 @@ class HotPotatoPlugin extends Gdn_Plugin {
 
         switch ($state['Method']) {
             case 'hotpotato':
-                $actions[] = array('hotpotato', null, $state);
+                $actions[] = ['hotpotato', null, $state];
                 break;
         }
     }
@@ -126,23 +170,25 @@ class HotPotatoPlugin extends Gdn_Plugin {
 
             case 'hotpotato':
 
+                $from = &$state['Sources']['User'];
+
                 if (!key_exists('User', $state['Targets'])) {
-                    $sender->acknowledge(null, T('You must supply a valid target user.'), 'custom', $state['Sources']['User'], [
+                    $sender->acknowledge(null, T('You must supply a valid target user.'), 'custom', $from, [
                         'Comment' => false
                     ]);
                     break;
                 }
 
                 // Target already has a potato?
-                $tossToUser = &$state['Targets']['User'];
-                $targetHasPotato = $sender->monitoring($tossToUser, 'hotpotato', false);
+                $to = &$state['Targets']['User'];
+                $targetHasPotato = $this->holding($to['UserID']);
                 if ($targetHasPotato) {
-                    $targetPotatoHash = val('hash', $targetHasPotato, null);
-                    $targetPotato = $this->getPotato($targetPotatoHash);
-                    $sender->acknowledge(null, T("{Target.Name} is already holding a {Potato.name}!"), 'custom', $state['Sources']['User'], [
+                    $targetPotatoID = val('PotatoID', $targetHasPotato, null);
+                    $targetPotato = $this->getPotato($targetPotatoID);
+                    $sender->acknowledge(null, T("{Target.Name} is already holding a {Potato.Name}!"), 'custom', $from, [
                         'Comment' => false
                     ], [
-                        'Target' => $tossToUser,
+                        'Target' => $to,
                         'Potato' => $targetPotato
                     ]);
                     break;
@@ -153,17 +199,16 @@ class HotPotatoPlugin extends Gdn_Plugin {
                 // Check access control
 
                 // Someone who has a potato may toss it
-                $haveHotPotato = $sender->monitoring(Gdn::session()->User, 'hotpotato', false);
+                $haveHotPotato = $this->holding($from['UserID']);
                 if ($haveHotPotato) {
-                    $potatoHash = val('hash', $haveHotPotato, null);
-                    $potato = $this->getPotato($potatoHash);
+                    $potatoID = val('PotatoID', $haveHotPotato, null);
+                    $potato = $this->getPotato($potatoID);
 
                     // Check this potato!
                     if ($potato) {
-                        $potatoName = $potato['name'];
                         $potatoOk = $this->checkPotato($potato);
                         if (!$potatoOk) {
-                            $sender->acknowledge(null, T('The {Potato.name} slips from your hand as you toss it!'), 'custom', $state['Sources']['User'], [
+                            $sender->acknowledge(null, T('The {Potato.Name} slips from your hand as you toss it!'), 'custom', $from, [
                                 'Comment' => false
                             ],[
                                 'Potato' => $potato
@@ -178,8 +223,18 @@ class HotPotatoPlugin extends Gdn_Plugin {
                 if (!$potato && Gdn::session()->checkPermission('Garden.Moderation.Manage')) {
                     $newPotatoName = valr('Targets.Potato', $state, null);
                     if (!$newPotatoName) {
-                        $sender->acknowledge(null, T('You must supply a name for the thing you want to toss!'), 'custom', $state['Sources']['User'], [
+                        $sender->acknowledge(null, T('You must supply a name for the new thing you want to toss!'), 'custom', $from, [
                             'Comment' => false
+                        ]);
+                        break;
+                    }
+
+                    $potatoExists = $this->findPotato($newPotatoName);
+                    if ($potatoExists) {
+                        $sender->acknowledge(null, T("It looks like there's already a {Name} floating around!"), 'custom', $from, [
+                            'Comment' => false
+                        ],[
+                            'Name' => $newPotatoName
                         ]);
                         break;
                     }
@@ -200,73 +255,189 @@ class HotPotatoPlugin extends Gdn_Plugin {
                     if (!is_integer($duration)) {
                         $duration = 84600;
                     }
-                    $potato = $this->newPotato($newPotatoName, $duration, Gdn::session()->UserID);
+                    $potato = $this->newPotato($newPotatoName, $duration, $from['UserID']);
                 }
 
                 // No potato, or failed to create potato
                 if (!$potato) {
-                    $sender->acknowledge(null, T("Couldn't find anything to toss!"), 'custom', $state['Sources']['User'], [
+                    $sender->acknowledge(null, T("Couldn't find anything to toss!"), 'custom', $from, [
                         'Comment' => false
                     ]);
                     break;
                 }
 
+                // Check if recipient has already received this item before
+                if ($this->hasReceived($potato, $to)) {
+                    $sender->acknowledge(null, T("Come on, don't you think someone else deserves some alone time with that {Potato.Name}?"), 'custom', $from, [
+                        'Comment' => false
+                    ],[
+                        'Potato' => $potato
+                    ]);
+                    break;
+                }
+
                 // Toss potato
-                $this->toss($potato, $tossToUser, Gdn::session()->User);
+                $this->toss($potato, $to, $from, true);
+
+                shuffle($this->throws);
+                $throwStyle = $this->throws[mt_rand(0, count($this->throws) - 1)];
+                $sender->acknowledge($state['Sources']['Discussion'], T("{From.Name} {ThrowStyle} the {Potato.Name} in {To.Name}'s general direction."), 'custom', $from, [
+                    'Comment' => false
+                ],[
+                    'To' => $to,
+                    'From' => $from,
+                    'Throws' => $throwStyle,
+                    'Potato' => $potato
+                ]);
                 break;
         }
     }
+
+    /*
+     * EVENT HOOKS
+     *
+     */
+
+    /**
+     * Hook for E:AnalyticsTick from Gdn_Statistics
+     *
+     * This hook handles checking and expiring potatoes currently in play. It
+     * should be executed roughly once per self::POTATO_CHECK_FREQ seconds, and
+     * has a built-in anti-dupe feature to prevent simultaneous execution.
+     *
+     * @param Gdn_Statistics $sender
+     * @return type
+     */
+    public function Gdn_Statistics_AnalyticsTick_Handler($sender) {
+        if (!$this->enabled) {
+            return;
+        }
+
+        // If the key exists, don't check
+        $locked = Gdn::cache()->get(self::POTATO_CHECK_KEY, [
+            Gdn_Cache::FEATURE_LOCAL => false
+        ]);
+        if ($locked) {
+            return;
+        }
+
+        // Set checking lock
+        $lock = uniqid();
+        Gdn::cache()->store(self::POTATO_CHECK_KEY, $lock, [
+            Gdn_Cache::FEATURE_EXPIRY => self::POTATO_CHECK_FREQ
+        ]);
+
+        // Mutex
+        $locked = Gdn::cache()->get(self::POTATO_CHECK_KEY, [
+            Gdn_Cache::FEATURE_LOCAL => false
+        ]);
+        if ($locked != $lock) {
+            return;
+        }
+
+        // Get all active potatoes
+        $potatos = self::potatoModel()->getWhere([
+            'Status' => 'active'
+        ])->resultArray();
+        if (!count($potatos)) {
+            return;
+        }
+
+        // Check them!
+        foreach ($potatos as $potato) {
+            // Get current holder
+            $holder = $this->holder($potato['hash']);
+
+            // No holder? Finish.
+            if (!$holder) {
+                $this->finish($potato);
+                continue;
+            }
+
+            // Holder dropped it?
+            //if ($holder[''])
+        }
+    }
+
+    /*
+     * LIBRARY
+     *
+     */
 
     /**
      * Create a new potato
      *
      * @param string $name
      * @param integer $duration
-     * @param integer $userID
+     * @param array $user
+     * @param array $discussion
      * @return string potato id hash
      */
-    public function newPotato($name, $duration, $userID) {
+    public function newPotato($name, $duration, $user, $discussion) {
 
-        $potatoHash = md5($name);
-
-        // Check if potato already exists and is active
-        $potato = $this->getPotato($potatoHash, true);
-        if (is_array($potato) && $potato['status'] == 'active') {
+        // Check if a potato with this name already exists and is active
+        $potato = $this->findPotato($name, true);
+        if ($potato) {
             return false;
         }
 
-        $potatoKey = sprintf(self::POTATO_KEY, $potatoHash);
+        // Create a new potato
+        $potatoHash = md5($name);
         $expiry = time() + $duration;
         $hold = strtotime('+'.C('Plugins.HotPotato.Hold', '8 hours')) - time();
         $potato = [
-            'name' => $name,
-            'hash' => $potatoHash,
-            'duration' => $duration,
-            'hold' => $hold,
-            'status' => 'active',
-            'expiry' => $expiry,
-            'passes' => 0,
-            'misses' => 0,
-            'owner' => $userID
+            'Name' => $name,
+            'Hash' => $potatoHash,
+            'Status' => 'active',
+            'Duration' => $duration,
+            'Hold' => $hold,
+            'Expiry' => $expiry,
+            'Passes' => 0,
+            'Misses' => 0,
+            'InsertUserID' => $user['UserID']
         ];
-        Gdn::set($potatoKey, json_encode($potato));
+        $potatoID = self::potatoModel()->save($potato);
+        $potato['PotatoID'] = $potatoID;
+        $this->potatoes[$potatoID] = $potato;
 
-        $this->potatoes[$potatoHash] = $potato;
+        // Assign to current user
+        self::potatoLogModel()->save([
+            'UserID' => $user['UserID'],
+            'PotatoID' => $potato['PotatoID'],
+            'TimeReceived' => time(),
+            'ReceivedDiscussionID' => $discussion['DiscussionID'],
+            'Passed' => 'holding'
+        ]);
+
+        MinionPlugin::instance()->monitor();
 
         return $potato;
     }
 
     /**
+     * Find an activate potato with this name
+     *
+     * @param string $name
+     * @return array|false potato row, or false
+     */
+    public function findPotato($name) {
+        $hash = md5($name);
+        $potato = self::potatoModel()->getHash($hash, true);
+
+        return $potato ? $potato : false;
+    }
+
+    /**
      * Get a potato
      *
-     * @param string $potatoHash
+     * @param string $potatoID
      * @param boolean $hardCheck force database/memcache check
      */
-    public function getPotato($potatoHash, $hardCheck = false) {
+    public function getPotato($potatoID, $hardCheck = false) {
         $potato = null;
 
         if (!$hardCheck) {
-            $potato = val($potatoHash, $this->potatoes, null);
+            $potato = val($potatoID, $this->potatoes, null);
 
             // Known non potato
             if ($potato === false) {
@@ -276,13 +447,10 @@ class HotPotatoPlugin extends Gdn_Plugin {
 
         // Unknown, query
         if (!$potato) {
-            $potatoKey = sprintf(self::POTATO_KEY, $potatoHash);
-            $potato = Gdn::get($potatoKey, false);
+            $potato = self::potatoModel()->getID($potatoID, DATASET_TYPE_ARRAY);
             if ($potato) {
-                $potato = json_decode($potato, true);
+                $this->potatoes[$potatoID] = $potato;
             }
-
-            $this->potatoes[$potatoHash] = $potato;
         }
         return $potato;
     }
@@ -294,10 +462,11 @@ class HotPotatoPlugin extends Gdn_Plugin {
      * @return array the modified potato
      */
     public function savePotato($potato) {
-        $potatoHash = $potato['hash'];
-        $potatoKey = sprintf(self::POTATO_KEY, $potatoHash);
-        Gdn::set($potatoKey, json_encode($potato));
-        $this->potatoes[$potatoHash] = $potato;
+        $saved = self::potatoModel()->save($potato);
+        if ($saved) {
+            $potatoID = $potato['PotatoID'];
+            $this->potatoes[$potatoID] = $potato;
+        }
 
         return $potato;
     }
@@ -305,54 +474,187 @@ class HotPotatoPlugin extends Gdn_Plugin {
     /**
      * Process a toss from someone to someone
      *
-     * @param MinionPlugin $minion
      * @param array $potato
      * @param array $to
      * @param array $from
+     * @param array $discussion the location where the toss took place
      * @param boolean $voluntary optional. whether this was a voluntary toss, or a drop
      */
-    public function toss($minion, $potato, $to, $from, $voluntary = true) {
+    public function toss($potato, $to, $from, $discussion, $voluntary = true) {
 
-        // Remove from tosser (hah)
-        $minion->monitor($from, [
-            'hotpotato' => null
-        ]);
-
-        // Give to recipient
-        $minion->monitor($to, [
-            'hotpotato' => [
-                'hash' => $potato['hash'],
-                'received' => time(),
-                'expires' => time() + $potato['hold']
-            ]
-        ]);
+        $holder = $this->holder($potato['PotatoID']);
+        $holder['ReceiverID'] = $to['UserID'];
 
         // Increment potato toss counter
         if ($voluntary) {
-            $potato['passes']++;
+            $potato['Passes']++;
+            $holder['Passed'] = 'passed';
         } else {
-            $potato['misses']++;
+            $potato['Misses']++;
+            $holder['Passed'] = 'dropped';
         }
         $this->savePotato($potato);
 
-        // Log potato transaction
+        $holder['TimePassed'] = time();
+        $holder['Held'] = $holder['TimePassed'] - $holder['TimeReceived'];
+
+        // Log potato transactions
+
+        // Record new recipient
+        $expiry = time() + $potato['Hold'];
+        if ($potato['Expiry'] < $expiry) {
+            $expiry = $potato['Expiry'];
+        }
+        MinionPlugin::instance()->monitor($to, [
+            'hotpotato' => [
+                'id' => $potato['PotatoID'],
+                'expiry' => time() + $potato['Hold']
+            ]
+        ]);
+        self::potatoLogModel()->save([
+            'UserID' => $to['UserID'],
+            'PotatoID' => $potato['PotatoID'],
+            'TimeReceived' => time(),
+            'ReceivedDiscussionID' => $discussion['DiscussionID'],
+            'PasserID' => $from['UserID'],
+            'Passed' => 'holding'
+        ]);
+
+        // Update old recipient
+        MinionPlugin::instance()->monitor($from, [
+            'hotpotato' => null
+        ]);
+        self::potatoLogModel()->save($holder);
+    }
+
+    /**
+     * Finish a potato
+     *
+     * @param array $potato
+     */
+    public function finish($potato) {
+        $potato['Status'] = 'inactive';
+        self::potatoModel()->save($potato);
+
 
     }
 
     /**
-     * 
+     * Check if a certain user has already received this potato
+     *
+     * @param array $potato
+     * @param array $recipient
+     * @return array|false holder row, or false
+     */
+    public function hasReceived($potato, $recipient) {
+        $holder = self::potatoLogModel()->getWhere([
+            'PotatoID' => $potato['PotatoID'],
+            'UserID' => $recipient['UserID']
+        ])->firstRow(DATASET_TYPE_ARRAY);
+
+        return $holder ? $holder : false;
+    }
+
+    /**
+     * Get the current holding row for this potato
+     *
+     * @param array $potatoID
+     * @return array|false holder row, or false
+     */
+    public function holder($potatoID) {
+        $holder = self::potatoLogModel()->getWhere([
+            'PotatoID' => $potatoID,
+            'Passed' => 'holding'
+        ])->firstRow(DATASET_TYPE_ARRAY);
+
+        return $holder ? $holder : false;
+    }
+
+    /**
+     * Check if the given user is holding a potato
+     *
+     * @param integer $userID
+     * @return array|false holder row, or false
+     */
+    public function holding($userID) {
+        $holder = self::potatoLogModel()->getWhere([
+            'UserID' => $userID,
+            'Passed' => 'holding'
+        ])->firstRow(DATASET_TYPE_ARRAY);
+
+        return $holder ? $holder : false;
+    }
+
+    /**
+     * Get a PotatoModel
+     *
+     * @staticvar PotatoModel $potatoModel
+     * @return PotatoModel
+     */
+    public static function potatoModel() {
+        static $potatoModel = null;
+        if (!is_a($potatoModel, 'PotatoModel')) {
+            $potatoModel = new PotatoModel();
+        }
+        return $potatoModel;
+    }
+
+    /**
+     * Get a PotatoLogModel
+     *
+     * @staticvar PotatoLogModel $potatoLogModel
+     * @return PotatoLogModel
+     */
+    public static function potatoLogModel() {
+        static $potatoLogModel = null;
+        if (!is_a($potatoLogModel, 'PotatoLogModel')) {
+            $potatoLogModel = new PotatoLogModel();
+        }
+        return $potatoLogModel;
+    }
+
+    /**
+     * On-enable setup
      */
     public function setup() {
-
+        $this->structure();
     }
 
     /**
      * Run database structure modifications
      *
-     * This is executed once when the plugin is enabled, and also whenever /utility/update is called.
+     * This is executed once when the plugin is enabled, and also whenever
+     * /utility/update or /utility/structure is called.
      */
     public function structure() {
+        Gdn::structure()->reset();
 
+        Gdn::structure()->table('Potato')
+            ->primaryKey('PotatoID')
+            ->column('Name', 'varchar(64)', false, 'index')
+            ->column('Hash', 'varchar(64)', false, 'index')
+            ->column('Status', ['active', 'inactive', 'completed'], 'active')
+            ->column('Duration', 'int(11)', false)
+            ->column('Hold', 'int(11)', false)
+            ->column('Expiry', 'int(11)', false)
+            ->column('Passes', 'int(11)', 0)
+            ->column('Misses', 'int(11)', 0)
+            ->column('InsertUserID', 'int(11)', false)
+            ->column('DateInserted', 'datetime', false)
+            ->set(false, false);
+
+        Gdn::structure()->table('PotatoLog')
+            ->primaryKey('PotatoLogID')
+            ->column('UserID', 'int(11)', false, 'index')
+            ->column('PotatoID', 'int(11)', false, 'index')
+            ->column('TimeReceived', 'int(11)', false)
+            ->column('ReceivedDiscussionID', 'int(11)', false)
+            ->column('PasserID', 'int(11)', true)
+            ->column('ReceiverID', 'int(11)', true)
+            ->column('Passed', ['holding','dropped','passed','forfeit'], 'holding')
+            ->column('TimePassed', 'int(11)', true)
+            ->column('Held', 'inf(11)', 0)
+            ->set(false, false);
     }
 
 }
