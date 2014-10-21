@@ -1038,8 +1038,6 @@ class MinionPlugin extends Gdn_Plugin {
             $this->parseCommand($state, $actions);
         }
 
-        unset($state);
-
         // Check if this person has had their access revoked.
         if (sizeof($actions)) {
             $access = $this->getUserMeta(Gdn::session()->UserID, 'Access', null, true);
@@ -1049,6 +1047,8 @@ class MinionPlugin extends Gdn_Plugin {
                 return false;
             }
         }
+
+        unset($state);
 
         // Perform all actions
         $performed = array();
