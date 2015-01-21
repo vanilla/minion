@@ -48,7 +48,7 @@ $PluginInfo['HotPotato'] = [
  *   Minion, lob a charbroiled octopus at @Weaver
  *
  * Passing syntax (for users) is:
- *   Minion, toss|pass|lob|hurl|throw <whatever, this part doesnt matter> at|to citizen Tube
+ *   Minion, toss|pass|lob|hurl|throw a|the|this|some <whatever, this part doesnt matter> at|to citizen Tube
  *
  * Several badger based achievements are possible.
  *
@@ -570,6 +570,7 @@ class HotPotatoPlugin extends Gdn_Plugin {
 
             $sender->addDefinition('PotatoExpiry', $timer);
             $sender->addDefinition('PotatoName', $potato['Name']);
+            $sender->addDefinition('PotatoBot', MinionPlugin::instance()->minionName());
             $sender->addJsFile('hotpotato.js', 'plugins/HotPotato');
         }
     }
@@ -1208,8 +1209,7 @@ class HotPotatoPlugin extends Gdn_Plugin {
         }
 
         // Target has already received this potato
-        $hasReceived = $this->hasReceived($potato, $recipient);
-        if ($hasReceived) {
+        if ($this->hasReceived($potato, $recipient)) {
             return false;
         }
 

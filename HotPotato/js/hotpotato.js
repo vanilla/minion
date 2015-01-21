@@ -76,18 +76,19 @@ function updatePotato() {
 
     var expiryFormatTime = String(expiryDelay).toFormatTime();
     var potatoName = gdn.definition('PotatoName', 'unknown potato');
+    var potatoBot = gdn.definition('PotatoBot', 'Minion');
     if (expiryDelay >= 1) {
         var color = '51CEFF';
         if (expiryDelay < 15) {
             color = '9F362E';
         }
         var complianceMessage = '';
-        complianceMessage += '<div class="Compliance" style="">';
+        complianceMessage += '<div class="Compliance">';
         complianceMessage += 'Toss the <b>'+potatoName+'</b> within the next <span style="color:#'+color+';">'+expiryFormatTime+'</span><br/><br/>';
-        complianceMessage += '<em>Minion, toss the '+potatoName+' at &lt;mention someone&gt;</em>';
+        complianceMessage += '<em>'+potatoBot+', toss the '+potatoName+' at &lt;mention someone&gt;</em>';
         complianceMessage += '</div>';
     } else {
-        var complianceMessage = '<div class="Compliance" style="color: #9f362e;">Oh god...</div>';
+        var complianceMessage = '<div class="Compliance" style="color: #9F362E;">Oh god...</div>';
     }
 
     var potatoTimerInform = jQuery('#PotatoTimer');
