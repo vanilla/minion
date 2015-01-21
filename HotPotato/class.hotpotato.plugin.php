@@ -306,6 +306,16 @@ class HotPotatoPlugin extends Gdn_Plugin {
                     break;
                 }
 
+                // Target doesn't qualify (bot)
+                if ($to['Admin'] == 2) {
+                    $sender->acknowledge(null, T("{Target.Mention} is a mechanical unit."), 'custom', $from, [
+                        'Comment' => false
+                    ], [
+                        'Target' => MinionPlugin::formatUser($to)
+                    ]);
+                    break;
+                }
+
                 // Target doesn't qualify (low rank)
                 if ($to['RankID'] == 1) {
                     $sender->acknowledge(null, T("{Target.Mention} is a little too new here to be trusted with a {Honorific} <b>{Potato.Name}</b>."), 'custom', $from, [
@@ -1192,13 +1202,19 @@ class HotPotatoPlugin extends Gdn_Plugin {
      * @return boolean
      */
     public function canReceive($potato, $recipient) {
-        // Target doesn't qualify (already has a potato)
-        if ($this->holding($recipient['UserID'])) {
+
+        // No bots
+        if ($recipient['Admin'] == 2) {
             return false;
         }
 
         // Target doesn't qualify (low rank)
         if ($recipient['RankID'] == 1) {
+            return false;
+        }
+
+        // Target doesn't qualify (already has a potato)
+        if ($this->holding($recipient['UserID'])) {
             return false;
         }
 
