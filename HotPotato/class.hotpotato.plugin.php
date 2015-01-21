@@ -43,12 +43,12 @@ $PluginInfo['HotPotato'] = [
  * ticks down sequentially.
  *
  * Creation syntax (for mods) is:
- *   Minion, toss a foul smelling rat carcass to citizen Weaver
- *   Minion, pass a dripping wet human arm to user Weaver
- *   Minion, lob a charbroiled octopus at @Weaver
+ *   Minion, toss|pass|lob|hurl|throw|chuck a|the|this|some foul smelling rat carcass at|to citizen Weaver
+ *   Minion, toss|pass|lob|hurl|throw|chuck a|the|this|some dripping wet human arm to user Weaver
+ *   Minion, toss|pass|lob|hurl|throw|chuck a|the|this|some charbroiled octopus at @Weaver
  *
  * Passing syntax (for users) is:
- *   Minion, toss|pass|lob|hurl|throw a|the|this|some <whatever, this part doesnt matter> at|to citizen Tube
+ *   Minion, toss|pass|lob|hurl|throw|chuck a|the|this|some <whatever, this part doesnt matter> at|to citizen Tube
  *
  * Several badger based achievements are possible.
  *
@@ -191,7 +191,8 @@ class HotPotatoPlugin extends Gdn_Plugin {
             'pass',
             'throw',
             'hurl',
-            'lob'
+            'lob',
+            'chuck'
         ])) {
             $sender->consume($state, 'Method', 'hotpotato');
         }
