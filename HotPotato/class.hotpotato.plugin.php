@@ -714,7 +714,7 @@ class HotPotatoPlugin extends Gdn_Plugin {
                                     'Potato' => $potato
                                 ]);
                             }
-                            MinionPlugin::instance()->punish($user, $discussion, null, MinionPlugin::FORCE_MEDIUM, [
+                            MinionPlugin::instance()->punish($user, null, null, MinionPlugin::FORCE_MEDIUM, [
                                 'Reason' => $reason,
                                 'Points' => 1
                             ]);
@@ -1509,37 +1509,37 @@ class HotPotatoPlugin extends Gdn_Plugin {
             [
                 'name' => 'Typhoid Mary',
                 'description' => 'Take a potato from one category to another',
-                'points' => 1
+                'points' => 10
             ],
             [
                 'name' => 'Billy the Kid',
                 'description' => 'Pass a potato less than 60 seconds after receiving it',
-                'points' => 1
+                'points' => 15
             ],
             [
                 'name' => 'Hurt Locker',
                 'description' => 'Receive a potato with less than 30 seconds remaining on the clock',
-                'points' => 1
+                'points' => 10
             ],
             [
                 'name' => 'EOD',
                 'description' => 'Dispose of a potato which had less than 30 seconds to detonate',
-                'points' => 1
+                'points' => 100
             ],
             [
                 'name' => 'Many Hands',
                 'description' => 'Be part of a potato chain that hits 100 people',
-                'points' => 1
+                'points' => 15
             ],
             [
                 'name' => 'Potato Farmer',
                 'description' => 'Receive 10 potatoes',
-                'points' => 1
+                'points' => 10
             ],
             [
                 'name' => 'Hospital Pass',
                 'description' => 'Pass a potato that expires and causes the recipient to go to jail',
-                'points' => 1
+                'points' => 25
             ]
         ];
 
