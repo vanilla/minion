@@ -177,33 +177,33 @@ class MinionWarnings extends Gdn_Plugin {
 
             case MinionPlugin::FORCE_LETHAL:
                 $type = 'banned';
-                $points = 8;
+                $points = val('Points', $options, 8);
                 $class = 'ban';
-                $warning = 0;
+                $warning = val('Points', $options, 0);
                 $expires = val('Expires', $options, "4 weeks");
                 break;
 
             case MinionPlugin::FORCE_HIGH:
                 $type = 'warned';
-                $points = 3;
+                $points = val('Points', $options, 3);
                 $class = 'major';
-                $warning = 0;
+                $warning = val('Points', $options, 0);
                 $expires = val('Expires', $options, "2 weeks");
                 break;
 
             case MinionPlugin::FORCE_MEDIUM:
                 $type = 'warned';
-                $points = 2;
+                $points = val('Points', $options, 2);
                 $class = 'minor';
-                $warning = 0;
+                $warning = val('Points', $options, 0);
                 $expires = val('Expires', $options, "1 week");
                 break;
 
             case MinionPlugin::FORCE_LOW:
                 $type = 'warned';
-                $points = 0;
+                $points = val('Points', $options, 0);
                 $class = 'warning';
-                $warning = 1;
+                $warning = val('Warning', $options, 1);
                 $expires = val('Expires', $options, "1 week");
                 break;
 
