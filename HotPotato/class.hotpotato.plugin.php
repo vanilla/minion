@@ -442,7 +442,7 @@ class HotPotatoPlugin extends Gdn_Plugin {
                     $connector = 'a';
                 }
 
-                $minionComment = $sender->acknowledge($state['Sources']['Discussion'], T("{From.Mention} {Throws} {Connector} {Honorific} <b>{Potato.Name}</b> in {To.Mention} general direction."), 'custom', $from, [
+                $minionComment = $sender->acknowledge($state['Sources']['Discussion'], T("{From.Mention} {Throws} {Connector} {Honorific} <b>{Potato.Name}</b> in {To.Mention}&#8203;'s general direction."), 'custom', $from, [
                     'Comment' => true
                 ],[
                     'To' => MinionPlugin::formatUser($to),
@@ -1170,7 +1170,7 @@ class HotPotatoPlugin extends Gdn_Plugin {
         // Announce completion
         $countDead = mt_rand(2,80);
         $killing = $countDead.' '.plural($countDead, 'person', 'people');
-        MinionPlugin::instance()->acknowledge($discussion, T("The {Honorific} <b>{Potato.Name}</b> came to rest in {Target.Mention} hands where it exploded into many tiny pieces, killing {Killing} including {Target.Mention}."), 'custom', $user, null, [
+        MinionPlugin::instance()->acknowledge($discussion, T("The {Honorific} <b>{Potato.Name}</b> came to rest in {Target.Mention}&#8203;'s hands where it exploded into many tiny pieces, killing {Killing} including {Target.Mention}."), 'custom', $user, null, [
             'Honorific' => $this->getHonorific(),
             'Killing' => $killing,
             'Target' => MinionPlugin::formatUser($user),
