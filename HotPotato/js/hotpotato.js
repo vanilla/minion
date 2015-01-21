@@ -77,7 +77,11 @@ function updatePotato() {
     var expiryFormatTime = String(expiryDelay).toFormatTime();
     var potatoName = gdn.definition('PotatoName', 'unknown potato');
     if (expiryDelay >= 1) {
-        var complianceMessage = '<div class="Compliance" style="">Toss the <b>'+potatoName+'</b> within the next <span style="color:#51CEFF;">'+expiryFormatTime+'</span></div>';
+        var complianceMessage = '';
+        complianceMessage += '<div class="Compliance" style="">';
+        complianceMessage += 'Toss the <b>'+potatoName+'</b> within the next <span style="color:#51CEFF;">'+expiryFormatTime+'</span><br/><br/>';
+        complianceMessage += '<em>Minion, toss the '+potatoName+' at &lt;mention someone&gt;</em>';
+        complianceMessage += '</div>';
     } else {
         var complianceMessage = '<div class="Compliance" style="color: #9f362e;">Oh god...</div>';
     }

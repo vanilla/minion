@@ -48,7 +48,7 @@ $PluginInfo['HotPotato'] = [
  *   Minion, lob a charbroiled octopus at @Weaver
  *
  * Passing syntax (for users) is:
- *   Minion, toss|pass|lob <whatever, this part doesnt matter> at|to citizen Tube
+ *   Minion, toss|pass|lob|hurl|throw <whatever, this part doesnt matter> at|to citizen Tube
  *
  * Several badger based achievements are possible.
  *
@@ -980,16 +980,26 @@ class HotPotatoPlugin extends Gdn_Plugin {
     public function tossed(&$potato, $comment, $from, $fromLog, $to = null, $toLog = null) {
 
         if (!is_null($to)) {
+
+            $honorific = $this->getHonorific();
+            $starts = $honorific[0];
+            if (stristr($starts, 'aeiouy') !== false) {
+                $connector = 'an';
+            } else {
+                $connector = 'a';
+            }
+
             // Notify
             $activity = [
                 'ActivityUserID' => $from['UserID'],
                 'NotifyUserID' => $to['UserID'],
-                'HeadlineFormat' => T("{ActivityUserID,user} has tossed a {Data.Honorific} <b>{Data.Potato.Name}</b> at you. You have <b>{Data.Time}</b> to pass it on!"),
+                'HeadlineFormat' => T("{ActivityUserID,user} has tossed {Data.Connector} {Data.Honorific} <b>{Data.Potato.Name}</b> at you. You have <b>{Data.Time}</b> to pass it on!"),
                 'RecordType' => 'Comment',
                 'RecordID' => $comment['CommentID'],
                 'Route' => commentUrl($comment),
                 'Data' => [
-                    'Honorific' => $this->getHonorific(),
+                    'Connector' => $connector,
+                    'Honorific' => $honorific,
                     'Time' => $this->getTimer($potato, $toLog, true),
                     'Potato' => $potato
                 ]
