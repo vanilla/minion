@@ -322,7 +322,7 @@ class HotPotatoPlugin extends Gdn_Plugin {
 
                 // Target doesn't qualify (not online recently)
                 $onlineAfter = time() - (self::ONLINE_MINUTES_AGO * 60);
-                if (strtotime($to['LastOnlineDate']) < $onlineAfter) {
+                if (!(strtotime($to['LastOnlineDate']) > $onlineAfter) && !(strtotime($to['DateLastActive']) > $onlineAfter)) {
                     $sender->acknowledge(null, T("I haven't seen {Target.Mention} around recently, pick someone more active to receive your <b>{Potato.Name}</b> blessing!"), 'custom', $from, [
                         'Comment' => false
                     ], [
@@ -1203,7 +1203,7 @@ class HotPotatoPlugin extends Gdn_Plugin {
 
         // Target doesn't quality (not online recently)
         $onlineAfter = time() - (self::ONLINE_MINUTES_AGO * 60);
-        if (strtotime($recipient['LastOnlineDate']) < $onlineAfter) {
+        if (!(strtotime($recipient['LastOnlineDate']) > $onlineAfter) && !(strtotime($recipient['DateLastActive']) > $onlineAfter)) {
             return false;
         }
 
