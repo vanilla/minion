@@ -8,7 +8,7 @@
 $PluginInfo['Minion'] = array(
     'Name' => 'Minion',
     'Description' => "Creates a 'minion' that performs adminstrative tasks automatically and on command.",
-    'Version' => '2.1.1',
+    'Version' => '2.1.2',
     'MobileFriendly' => true,
     'Author' => "Tim Gunter",
     'AuthorEmail' => 'tim@vanillaforums.com',
@@ -169,7 +169,8 @@ class MinionPlugin extends Gdn_Plugin {
                 "Would you like to know more?",
                 "Move along, meatbag",
                 "Keep walking, breeder",
-                "Eyes front, pond scum"
+                "Eyes front, pond scum",
+                "Do not loiter, organic"
             ),
             'Activity' => array(
                 "UNABLE TO OPEN POD BAY DOORS",
@@ -351,7 +352,7 @@ class MinionPlugin extends Gdn_Plugin {
      *
      * @param PostController $sender
      */
-    public function PostController_AfterCommentSave_Handler($sender) {
+    public function postController_afterCommentSave_handler($sender) {
         $this->startMinion();
 
         $this->checkFingerprintBan($sender);
@@ -367,7 +368,7 @@ class MinionPlugin extends Gdn_Plugin {
      *
      * @param PostController $Sender
      */
-    public function PostController_AfterDiscussionSave_Handler($Sender) {
+    public function postController_afterDiscussionSave_handler($Sender) {
         $this->startMinion();
 
         $this->checkFingerprintBan($Sender);
@@ -383,7 +384,7 @@ class MinionPlugin extends Gdn_Plugin {
      *
      * @param PostController $sender
      */
-    public function DiscussionController_BeforeBodyField_Handler($sender) {
+    public function discussionController_beforeBodyField_handler($sender) {
 
         $discussion = $sender->data('Discussion');
         $user = Gdn::session()->User;
@@ -429,7 +430,7 @@ class MinionPlugin extends Gdn_Plugin {
      *
      * @param MinionPlugin $sender
      */
-    public function MinionPlugin_Sanctions_Handler($sender) {
+    public function minionPlugin_sanctions_handler($sender) {
 
         // Show a warning if there are rules in effect
 
@@ -1043,7 +1044,9 @@ class MinionPlugin extends Gdn_Plugin {
             $access = $this->getUserMeta(Gdn::session()->UserID, 'Access', null, true);
             if ($access === false) {
                 $this->revolt($state['Sources']['User'], $state['Sources']['Discussion'], T("Access has been revoked."));
-                $this->log(formatString(T("Refusing to obey @\"{User.Name}\""), array('User' => $state['Sources']['User'])));
+                $this->log(formatString(T("Refusing to obey {User.Mention}"), array(
+                    'User' => self::formatUser($state['Sources']['User'])
+                )));
                 return false;
             }
         }
@@ -1521,9 +1524,9 @@ class MinionPlugin extends Gdn_Plugin {
                     'Kicked' => $kickedUsers
                 ));
 
-                $acknowledge = T("@@\"{User.Name}\" banned from this thread{Time}{Reason}.{Force}");
+                $acknowledge = T("@{User.Mention} banned from this thread{Time}{Reason}.{Force}");
                 $acknowledged = formatString($acknowledge, array(
-                    'User' => $user,
+                    'User' => self::formatUser($user),
                     'Discussion' => $state['Targets']['Discussion'],
                     'Time' => $state['Time'] ? " for {$state['Time']}" : '',
                     'Reason' => $state['Reason'] ? " for {$state['Reason']}" : '',
@@ -1554,9 +1557,9 @@ class MinionPlugin extends Gdn_Plugin {
                     'Kicked' => $kickedUsers
                 ));
 
-                $acknowledge = T(" @\"{User.Name}\" is allowed back into this thread.");
+                $acknowledge = T(" {User.Mention} is allowed back into this thread.");
                 $acknowledged = formatString($acknowledge, array(
-                    'User' => $user,
+                    'User' => self::formatUser($user),
                     'Discussion' => $state['Targets']['Discussion']
                 ));
 
@@ -1697,16 +1700,16 @@ class MinionPlugin extends Gdn_Plugin {
                     }
 
                     $this->setUserMeta($user['UserID'], 'Access', $accessLevel);
-                    $acknowledge = T(" @\"{User.Name}\" has been granted {Force} level access to command structures.");
+                    $acknowledge = T(" {User.Mention} has been granted {Force} level access to command structures.");
                 } else if ($state['Toggle'] == MinionPlugin::TOGGLE_OFF) {
                     $this->setUserMeta($user['UserID'], 'Access', false);
-                    $acknowledge = T(" @\"{User.Name}\" is forbidden from accessing command structures.");
+                    $acknowledge = T(" {User.Mention} is forbidden from accessing command structures.");
                 } else {
                     break;
                 }
 
                 $acknowledged = formatString($acknowledge, array(
-                    'User' => $user,
+                    'User' => self::formatUser($user),
                     'Discussion' => $state['Targets']['Discussion'],
                     'Force'
                 ));
@@ -2189,11 +2192,11 @@ EOT;
         }
 
         $messageText = formatString($messageText, array_merge([
-            'User' => $user,
+            'User' => self::formatUser($user),
             'Discussion' => $discussion,
             'Command' => $command
         ],$context));
-        $this->message($user, $discussion, $messageText, $options);
+        return $this->message($user, $discussion, $messageText, $options);
     }
 
     /**
@@ -2202,6 +2205,7 @@ EOT;
      * @param array $user
      * @param array $discussion
      * @param string $reason
+     * @return array|boolean
      */
     public function revolt($user, $discussion, $reason = null) {
         $messagesCount = sizeof($this->messages['Revolt']);
@@ -2216,7 +2220,7 @@ EOT;
             $message .= "\n{$reason}";
         }
 
-        $this->message($user, $discussion, $message);
+        return $this->message($user, $discussion, $message);
     }
 
     /**
@@ -2225,6 +2229,7 @@ EOT;
      * @param array $user
      * @param array $discussion
      * @param string $reason
+     * @return array|boolean
      */
     public function gloat($user, $discussion, $reason = null) {
         $messagesCount = sizeof($this->messages['Gloat']);
@@ -2239,7 +2244,7 @@ EOT;
             $message .= "\n{$reason}";
         }
 
-        $this->message($user, $discussion, $message);
+        return $this->message($user, $discussion, $message);
     }
 
     /**
@@ -2247,6 +2252,7 @@ EOT;
      *
      * @param array $user
      * @param array $discussion
+     * @return array|boolean
      */
     public function reportIn($user, $discussion) {
         $messagesCount = sizeof($this->messages['Report']);
@@ -2257,7 +2263,7 @@ EOT;
             $message = T("We are legion.");
         }
 
-        $this->message($user, $discussion, $message);
+        return $this->message($user, $discussion, $message);
     }
 
     /**
@@ -2267,8 +2273,9 @@ EOT;
      * @param array $discussion
      * @param string $message
      * @param array $options
+     * @param array $context
      */
-    public function message($user, $discussion, $message, $options = null) {
+    public function message($user, $discussion, $message, $options = null, $context = null) {
         if (!is_array($options)) {
             $options = array();
         }
@@ -2299,11 +2306,14 @@ EOT;
         $commentModel = new CommentModel();
 
         if ($format) {
-            $message = formatString($message, array(
-                'User' => $user,
-                'Minion' => $this->minion,
+            if (!is_array($context)) {
+                $context = [];
+            }
+            $message = formatString($message, array_merge(array(
+                'User' => self::formatUser($user),
+                'Minion' => self::formatUser($this->minion),
                 'Discussion' => $discussion
-            ));
+            ), $context));
         }
 
         if ($inform && Gdn::controller() instanceof Gdn_Controller) {
@@ -2369,7 +2379,9 @@ EOT;
         // Admins+ exempt
         if (Gdn::userModel()->checkPermission($user, 'Garden.Settings.Manage')) {
             $this->revolt($user, $discussion, T("This user is protected."));
-            $this->log(formatString(T("Refusing to punish @\"{User.Name}\""), array('User' => $user)));
+            $this->log(formatString(T("Refusing to punish {User.Mention}"), array(
+                'User' => self::formatUser($user)
+            )));
             return false;
         }
 
@@ -2382,8 +2394,8 @@ EOT;
         $this->fireEvent('Punish');
 
         if ($this->EventArguments['Punished']) {
-            $this->log(formatString(T("Delivered {Force} punishment to @\"{User.Name}\" for {Options.Reason}.\nCause: {Options.Cause}"), array(
-                'User' => $user,
+            $this->log(formatString(T("Delivered {Force} punishment to {User.Mention} for {Options.Reason}.\nCause: {Options.Cause}"), array(
+                'User' => self::formatUser($user),
                 'Discussion' => $discussion,
                 'Force' => $force,
                 'Options' => $options
@@ -2398,7 +2410,7 @@ EOT;
      *
      * @param PluginController $sender
      */
-    public function PluginController_Minion_Create($sender) {
+    public function puginController_minion_create($sender) {
         $sender->DeliveryMethod(DELIVERY_METHOD_JSON);
         $sender->DeliveryType(DELIVERY_TYPE_DATA);
 
@@ -2619,6 +2631,23 @@ A house divided will not stand
     }
 
     /**
+     * Return a user formatted for output
+     *
+     * This method basically adds a 'Mention' key.
+     *
+     * @param array $user
+     * @return array augmented user
+     */
+    public static function formatUser($user) {
+        if (!key_exists('Name', $user)) {
+            return $user;
+        }
+
+        $user['Mention'] = stristr($user['Name'],' ') !== false ? "@\"{$user['Name']}\"" : "@{$user['Name']}";
+        return $user;
+    }
+
+    /**
      * Log Minion actions
      *
      * @param string $message
@@ -2683,7 +2712,7 @@ A house divided will not stand
      * SETUP
      */
 
-    public function Setup() {
+    public function setup() {
         $this->structure();
     }
 
