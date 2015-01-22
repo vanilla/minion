@@ -728,7 +728,8 @@ class HotPotatoPlugin extends Gdn_Plugin {
                             }
                             MinionPlugin::instance()->punish($user, null, null, MinionPlugin::FORCE_MEDIUM, [
                                 'Reason' => $reason,
-                                'Points' => 1
+                                'Points' => 1,
+                                'Invoker' => MinionPlugin::instance()->minion()
                             ]);
 
                             $user = Gdn::userModel()->getID($log['UserID'], DATASET_TYPE_ARRAY);
