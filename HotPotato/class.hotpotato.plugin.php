@@ -257,7 +257,7 @@ class HotPotatoPlugin extends Gdn_Plugin {
                 $from = &$state['Sources']['User'];
                 $givenPotatoName = valr('Targets.Potato', $state, null);
 
-                if (!key_exists('User', $state['Targets']) || !val('User.UserID', $state['Targets'])) {
+                if (!key_exists('User', $state['Targets']) || !valr('User.UserID', $state['Targets'])) {
                     $sender->acknowledge(null, T('You must supply a valid target user.'), 'custom', $from, [
                         'Comment' => false
                     ]);
