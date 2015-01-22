@@ -85,7 +85,7 @@ function updatePotato() {
         var complianceMessage = '';
         complianceMessage += '<div class="Compliance">';
         complianceMessage += 'Toss the <b>'+potatoName+'</b> within the next <span style="color:#'+color+';">'+expiryFormatTime+'</span><br/><br/>';
-        complianceMessage += '<i><em>'+potatoBot+', toss the '+potatoName+' at &lt;mention someone&gt;</em></i>';
+        complianceMessage += 'Use: <i><em>'+potatoBot+', toss the '+potatoName+' at &lt;@mention someone&gt;</em></i>';
         complianceMessage += '</div>';
     } else {
         var complianceMessage = '<div class="Compliance" style="color: #9F362E;">Oh god...</div>';
