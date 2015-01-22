@@ -199,14 +199,16 @@ class HotPotatoPlugin extends Gdn_Plugin {
 
         // Get potato name
         if ($state['Method'] == 'hotpotato') {
-            if (valr('Gather.Node', $state, null) != 'Potato' && in_array($state['CompareToken'], ['a','this','some','the'])) {
-                $sender->consume($state, 'Gather', [
-                    'Node' => 'Potato',
-                    'Type' => 'phrase',
-                    'Delta' => '',
-                    'Terminator' => true,
-                    'Boundary' => ['to', 'at']
-                ]);
+            if (valr('Gather.Node', $state, null) != 'Potato') {
+                if (in_array($state['CompareToken'], ['a','an','this','some','the'])) {
+                    $sender->consume($state, 'Gather', [
+                        'Node' => 'Potato',
+                        'Type' => 'phrase',
+                        'Delta' => '',
+                        'Terminator' => true,
+                        'Boundary' => ['to', 'at']
+                    ]);
+                }
             }
         }
     }
@@ -255,7 +257,7 @@ class HotPotatoPlugin extends Gdn_Plugin {
                 $from = &$state['Sources']['User'];
                 $givenPotatoName = valr('Targets.Potato', $state, null);
 
-                if (!key_exists('User', $state['Targets'])) {
+                if (!key_exists('User', $state['Targets']) || !val('User.UserID', $state['Targets'])) {
                     $sender->acknowledge(null, T('You must supply a valid target user.'), 'custom', $from, [
                         'Comment' => false
                     ]);
@@ -310,6 +312,16 @@ class HotPotatoPlugin extends Gdn_Plugin {
                 // Target doesn't qualify (bot)
                 if ($to['Admin'] == 2) {
                     $sender->acknowledge(null, T("{Target.Mention} is a mechanical unit."), 'custom', $from, [
+                        'Comment' => false
+                    ], [
+                        'Target' => MinionPlugin::formatUser($to)
+                    ]);
+                    break;
+                }
+
+                // Target doesn't qualify (bot)
+                if ($to['Punished']) {
+                    $sender->acknowledge(null, T("{Target.Mention} is currently on a time-out."), 'custom', $from, [
                         'Comment' => false
                     ], [
                         'Target' => MinionPlugin::formatUser($to)
@@ -1207,6 +1219,11 @@ class HotPotatoPlugin extends Gdn_Plugin {
 
         // No bots
         if ($recipient['Admin'] == 2) {
+            return false;
+        }
+
+        // No jailed people
+        if ($recipient['Punished']) {
             return false;
         }
 
