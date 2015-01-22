@@ -221,6 +221,11 @@ class MinionWarnings extends Gdn_Plugin {
             $mod['InsertUserID'] = $sender->getMinionUserID();
         }
 
+        // Don't let non-mods issue warnings
+        if (!Gdn::session()->checkPermission('Garden.Moderation.Manage')) {
+            $mod['InsertUserID'] = $sender->getMinionUserID();
+        }
+
         if ($expires) {
             $note .= $expires;
         }
