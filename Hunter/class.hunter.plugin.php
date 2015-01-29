@@ -479,7 +479,7 @@ class HunterPlugin extends Gdn_Plugin {
             'UrlCode' => 'AlertAuthorities',
             'Name' => 'Alert Authorities',
             'Sort' => 0,
-            'Class' => 'Good',
+            'Class' => 'Positive',
             'Hidden' => 1,
             'Description' => "Use this to 'Alert' Minion to the presence of a criminal currently being pursued."
          ));
@@ -489,7 +489,7 @@ class HunterPlugin extends Gdn_Plugin {
             'UrlCode' => 'HideCriminal',
             'Name' => 'Hide Criminal',
             'Sort' => 0,
-            'Class' => 'Good',
+            'Class' => 'Positive',
             'Hidden' => 1,
             'Description' => "Use this to 'Hide' a criminal being pursued by Minion."
          ));

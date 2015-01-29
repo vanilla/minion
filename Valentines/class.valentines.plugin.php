@@ -2091,7 +2091,7 @@ STATISTICS;
             'UrlCode' => 'ShootArrow',
             'Name' => 'Arrow of Desire',
             'Sort' => 0,
-            'Class' => 'Good',
+            'Class' => 'Positive',
             'Hidden' => 1,
             'Description' => "Shoot your target with an arrow of desire."
          ));
@@ -2101,7 +2101,7 @@ STATISTICS;
             'UrlCode' => 'Affectionate',
             'Name' => 'Affectionate Sequence',
             'Sort' => 0,
-            'Class' => 'Good',
+            'Class' => 'Positive',
             'Hidden' => 1,
             'Description' => "This communication is adequately affectionate."
          ));
@@ -2111,7 +2111,7 @@ STATISTICS;
             'UrlCode' => 'Unimpressive',
             'Name' => 'Unimpressive Display',
             'Sort' => 0,
-            'Class' => 'Bad',
+            'Class' => 'Negative',
             'Hidden' => 1,
             'Description' => "This communication does not meet minimum affection standards."
          ));
