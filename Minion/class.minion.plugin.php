@@ -500,7 +500,7 @@ class MinionPlugin extends Gdn_Plugin {
      * @param PostController $sender
      */
     protected function checkFingerprintBan($sender) {
-        if (!c('Plugins.Minion.Features.Fingerprint', true)) {
+        if (!C('Plugins.Minion.Features.Fingerprint', true)) {
             return;
         }
 
@@ -510,7 +510,7 @@ class MinionPlugin extends Gdn_Plugin {
         $flagMeta = $this->getUserMeta(Gdn::session()->UserID, "FingerprintCheck", false);
 
         // User already flagged
-        if (!$flagMeta) {
+        if ($flagMeta) {
             return;
         }
 
@@ -2639,7 +2639,7 @@ A house divided will not stand
      * @return array augmented user
      */
     public static function formatUser($user) {
-        if (!key_exists('Name', $user)) {
+        if (!array_key_exists('Name', $user)) {
             return $user;
         }
 
