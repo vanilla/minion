@@ -2410,11 +2410,11 @@ EOT;
      *
      * @param PluginController $sender
      */
-    public function puginController_minion_create($sender) {
-        $sender->DeliveryMethod(DELIVERY_METHOD_JSON);
-        $sender->DeliveryType(DELIVERY_TYPE_DATA);
+    public function pluginController_minion_create($sender) {
+        $sender->deliveryMethod(DELIVERY_METHOD_JSON);
+        $sender->deliveryType(DELIVERY_TYPE_DATA);
 
-        $lastMinionDate = Gdn::Get('Plugin.Minion.LastRun', false);
+        $lastMinionDate = Gdn::get('Plugin.Minion.LastRun', false);
         if (!$lastMinionDate) {
             Gdn::set('Plugin.Minion.LastRun', date('Y-m-d H:i:s'));
         }
@@ -2433,11 +2433,11 @@ EOT;
         }
 
         // Remember when we last ran
-        Gdn::Set('Plugin.Minion.LastRun', date('Y-m-d H:i:s'));
+        Gdn::set('Plugin.Minion.LastRun', date('Y-m-d H:i:s'));
 
         // Currently operating as Minion
         $this->minionUserID = $this->getMinionUserID();
-        $this->minion = Gdn::userModel()->GetID($this->minionUserID);
+        $this->minion = Gdn::userModel()->getID($this->minionUserID);
         Gdn::session()->User = $this->minion;
         Gdn::session()->UserID = $this->minion['UserID'];
 
@@ -2479,7 +2479,7 @@ EOT;
             $userData = array();
 
             $userID = $userRow['UserID'];
-            $user = Gdn::userModel()->GetID($userID);
+            $user = Gdn::userModel()->getID($userID);
             if ($user->Banned) {
                 continue;
             }
@@ -2494,7 +2494,7 @@ EOT;
             }
 
             // Safe users get skipped
-            $userSafe = Gdn::UserMetaModel()->getUserMeta($userID, "Plugin.Minion.Safe", false);
+            $userSafe = Gdn::userMetaModel()->getUserMeta($userID, "Plugin.Minion.Safe", false);
             $userIsSafe = (boolean)val('Plugin.Minion.Safe', $userSafe, false);
             if ($userIsSafe) {
                 continue;
