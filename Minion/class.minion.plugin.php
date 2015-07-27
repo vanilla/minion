@@ -310,6 +310,7 @@ class MinionPlugin extends Gdn_Plugin {
 
         // Apply queued persona
         if ($personaName === true) {
+            
             // Don't re-apply
             $currentPersona = valr('Attributes.Persona', $this->minion, null);
             if (!is_null($currentPersona) && !is_bool($this->persona) && $this->persona === $currentPersona) {
@@ -2409,7 +2410,7 @@ EOT;
      * Run time based actions
      *
      *
-     * @param Gdn_Statistics $Sender
+     * @param Gdn_Statistics $sender
      */
     public function gdn_statistics_analyticsTick_handler($sender) {
         $sender->deliveryMethod(DELIVERY_METHOD_JSON);
