@@ -2417,7 +2417,7 @@ EOT;
      * @param Gdn_Statistics $sender
      */
     public function gdn_statistics_analyticsTick_handler($sender) {
-        $this->minionUpkeep($sender);
+        $this->minionUpkeep(Gdn::controller());
     }
 
     /**
@@ -2443,9 +2443,10 @@ EOT;
         $lastMinionDate = Gdn::get('Plugin.Minion.LastRun', false);
         if (!$lastMinionDate) {
             Gdn::set('Plugin.Minion.LastRun', date('Y-m-d H:i:s'));
+            $lastMinionDate = 0;
         }
 
-        $lastMinionTime = $lastMinionDate ? strtotime($lastMinionDate) : null;
+        $lastMinionTime = strtotime($lastMinionDate);
         if (!$lastMinionTime) {
             $lastMinionTime = 0;
         }
