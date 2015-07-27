@@ -2406,11 +2406,12 @@ EOT;
     }
 
     /**
-     * Minion upkeep trigger
+     * Run time based actions
      *
-     * @param PluginController $sender
+     *
+     * @param Gdn_Statistics $Sender
      */
-    public function pluginController_minion_create($sender) {
+    public function gdn_statistics_analyticsTick_handler($sender) {
         $sender->deliveryMethod(DELIVERY_METHOD_JSON);
         $sender->deliveryType(DELIVERY_TYPE_DATA);
 
@@ -2434,6 +2435,19 @@ EOT;
 
         // Remember when we last ran
         Gdn::set('Plugin.Minion.LastRun', date('Y-m-d H:i:s'));
+        $sender->setData('Run', true);
+
+        $this->minionUpkeep($sender);
+
+        $sender->render();
+    }
+
+    /**
+     * Minion upkeep trigger
+     *
+     * @param PluginController $sender
+     */
+    public function minionUpkeep($sender) {
 
         // Currently operating as Minion
         $this->minionUserID = $this->getMinionUserID();
@@ -2441,7 +2455,6 @@ EOT;
         Gdn::session()->User = $this->minion;
         Gdn::session()->UserID = $this->minion['UserID'];
 
-        $sender->setData('Run', true);
         $sender->setData('MinionUserID', $this->minionUserID);
         $sender->setData('Minion', $this->minion['Name']);
 
@@ -2450,8 +2463,6 @@ EOT;
 
         // Sometimes update activity feed
         $this->activity($sender);
-
-        $sender->render();
     }
 
     /**
