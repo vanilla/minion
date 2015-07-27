@@ -69,7 +69,7 @@ class MinionWarnings extends Gdn_Plugin {
         $state = &$sender->EventArguments['State'];
 
         // If we don't know the targetted user, try to detect by a quote
-        if (!key_exists('User', $state['Targets'])) {
+        if (!array_key_exists('User', $state['Targets'])) {
             $sender->matchQuoted($state);
         }
 
@@ -101,7 +101,7 @@ class MinionWarnings extends Gdn_Plugin {
             case 'warn':
             case 'ban':
 
-                if (!key_exists('User', $state['Targets'])) {
+                if (!array_key_exists('User', $state['Targets'])) {
                     $sender->acknowledge(null, T('You must supply a valid target user.'), 'custom', $state['Sources']['User'], array(
                         'Comment' => false
                     ));
@@ -216,7 +216,7 @@ class MinionWarnings extends Gdn_Plugin {
         $note = $automated ? formatString(T('Automated warning assigned by {Minion.Name}. '), array(
             'Minion' => $sender->minion()
         )) : '';
-        if (key_exists('Invoker', $options)) {
+        if (array_key_exists('Invoker', $options)) {
             $note .= sprintf(T('Invoked by %s. '), valr('Invoker.Name', $options));
             $mod['InsertUserID'] = $sender->getMinionUserID();
         }

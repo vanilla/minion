@@ -227,7 +227,7 @@ class HotPotatoPlugin extends Gdn_Plugin {
         $state = &$sender->EventArguments['State'];
 
         // If we don't know the targetted user, try to detect by a quote
-        if (!key_exists('User', $state['Targets'])) {
+        if (!array_key_exists('User', $state['Targets'])) {
             $sender->matchQuoted($state);
         }
 
@@ -257,7 +257,7 @@ class HotPotatoPlugin extends Gdn_Plugin {
                 $from = &$state['Sources']['User'];
                 $givenPotatoName = valr('Targets.Potato', $state, null);
 
-                if (!key_exists('User', $state['Targets']) || !valr('User.UserID', $state['Targets'])) {
+                if (!array_key_exists('User', $state['Targets']) || !valr('User.UserID', $state['Targets'])) {
                     $sender->acknowledge(null, T('You must supply a valid target user.'), 'custom', $from, [
                         'Comment' => false
                     ]);
@@ -467,7 +467,7 @@ class HotPotatoPlugin extends Gdn_Plugin {
                 ]);
 
                 // Delete self comment
-                if (!key_exists('isnew', $potato)) {
+                if (!array_key_exists('isnew', $potato)) {
                     $commentModel = new CommentModel();
                     $commentModel->delete($comment['CommentID']);
                 }
@@ -1450,7 +1450,7 @@ class HotPotatoPlugin extends Gdn_Plugin {
         }
 
         // Look for badge by slug
-        if (!key_exists($badgeSlug, $badges)) {
+        if (!array_key_exists($badgeSlug, $badges)) {
             return false;
         }
 

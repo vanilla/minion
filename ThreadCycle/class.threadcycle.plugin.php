@@ -151,13 +151,13 @@ class ThreadCyclePlugin extends Gdn_Plugin {
                     }
                 }
 
-                if (key_exists('replace', $engineInfo) && key_exists($speed, $engineInfo['replace'])) {
+                if (array_key_exists('replace', $engineInfo) && array_key_exists($speed, $engineInfo['replace'])) {
                     $speed = val($speed, $engineInfo['replace']);
                 }
                 if (!$realSpeed) {
                     $speedcontext['format'] = 'drifing in space';
                 }
-                if (key_exists('verbs', $engineInfo)) {
+                if (array_key_exists('verbs', $engineInfo)) {
                     $verbKey = array_rand($engineInfo['verbs']);
                     $verb = val($verbKey, $engineInfo['verbs']);
                     $speedcontext['verb'] = $verb;
@@ -296,7 +296,7 @@ class ThreadCyclePlugin extends Gdn_Plugin {
         }
 
         // Don't execute anything if we're in the middle of cycling this thread
-        $isCycling = key_exists($discussionID, self::$cycling);
+        $isCycling = array_key_exists($discussionID, self::$cycling);
         if ($isCycling) {
             return;
         }
@@ -314,12 +314,12 @@ class ThreadCyclePlugin extends Gdn_Plugin {
         $setfield = $sender->EventArguments['SetField'];
 
         // We only care if this save closes the discussion
-        if (!key_exists('Closed', $setfield) || !$setfield['Closed']) {
+        if (!array_key_exists('Closed', $setfield) || !$setfield['Closed']) {
             return;
         }
 
         // Don't execute anything if we're in the middle of cycling this thread
-        $isCycling = key_exists($discussionID, self::$cycling);
+        $isCycling = array_key_exists($discussionID, self::$cycling);
         if ($isCycling) {
             return;
         }
@@ -393,7 +393,7 @@ class ThreadCyclePlugin extends Gdn_Plugin {
                     'Reward' => 0
                 );
 
-                if (!key_exists($absTimeDiff, $ordered)) {
+                if (!array_key_exists($absTimeDiff, $ordered)) {
                     $ordered[$absTimeDiff] = array();
                 }
 
@@ -514,7 +514,7 @@ class ThreadCyclePlugin extends Gdn_Plugin {
             foreach ($winners as $winningWager) {
                 svalr('Mention', $winningWager['User'], "@\"{$winningWager['User']['Name']}\"");
                 $message .= formatString(T("{User.Mention}, who bet <b>{ForStr}</b> with {Points} points and received <b>{Winnings}</b>"), $winningWager);
-                if (key_exists('Boost', $winningWager) && $winningWager['Boost']) {
+                if (array_key_exists('Boost', $winningWager) && $winningWager['Boost']) {
                     $message .= sprintf(T(" (%d%% early bet bonus)"), $winningWager['Boost']);
                 }
                 $message .= "<br/>";
@@ -565,7 +565,7 @@ class ThreadCyclePlugin extends Gdn_Plugin {
                 );
             }
 
-            if (is_array($wagerRecord) && key_exists('Wagers', $wagerRecord)) {
+            if (is_array($wagerRecord) && array_key_exists('Wagers', $wagerRecord)) {
                 $wagerRecord['Wagers']++;
                 $wagerRecord['Points']['Bet'] += $record['Points'];
                 $wagerRecord['Points']['Won'] += $record['Reward'];
@@ -875,12 +875,12 @@ class ThreadCyclePlugin extends Gdn_Plugin {
 
 
                         // We require a wager!
-                        if (!key_exists('Wager', $state['Targets'])) {
+                        if (!array_key_exists('Wager', $state['Targets'])) {
                             throw new Exception(T("You didn't supply a wager amount!"));
                         }
 
                         // We require a time!
-                        if (!key_exists('Time', $state)) {
+                        if (!array_key_exists('Time', $state)) {
                             throw new Exception(T("You didn't supply a valid time!"));
                         }
                         $wagerTime = trim($state['Time'], ' .,!?/\\#@');
