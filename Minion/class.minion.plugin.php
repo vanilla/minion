@@ -8,7 +8,7 @@
 $PluginInfo['Minion'] = array(
     'Name' => 'Minion',
     'Description' => "Creates a 'minion' that performs adminstrative tasks automatically and on command.",
-    'Version' => '2.1.2',
+    'Version' => '2.2.0',
     'MobileFriendly' => true,
     'Author' => "Tim Gunter",
     'AuthorEmail' => 'tim@vanillaforums.com',
@@ -56,6 +56,7 @@ $PluginInfo['Minion'] = array(
  *  1.17    Handle new autocompleted mentions
  *  2.0     PSR-2 and Warnings support
  *  2.1.1   Fix newline handling
+ *  2.2.0   Fix upkeep
  *
  * @author Tim Gunter <tim@vanillaforums.com>
  * @package minion
@@ -310,7 +311,7 @@ class MinionPlugin extends Gdn_Plugin {
 
         // Apply queued persona
         if ($personaName === true) {
-            
+
             // Don't re-apply
             $currentPersona = valr('Attributes.Persona', $this->minion, null);
             if (!is_null($currentPersona) && !is_bool($this->persona) && $this->persona === $currentPersona) {
@@ -2413,6 +2414,26 @@ EOT;
      * @param Gdn_Statistics $sender
      */
     public function gdn_statistics_analyticsTick_handler($sender) {
+        $this->minionUpkeep($sender);
+    }
+
+    /**
+     * Run upkeep actions
+     *
+     * @param PluginController $sender
+     */
+    public function pluginController_minion_create($sender) {
+        $this->minionUpkeep($sender);
+    }
+
+    /**
+     * Upkeep wrapper
+     *
+     *  - ensures maximum frequency of 1 per 5 minutes
+     *
+     * @param PluginController $sender
+     */
+    public function minionUpkeep($sender) {
         $sender->deliveryMethod(DELIVERY_METHOD_JSON);
         $sender->deliveryType(DELIVERY_TYPE_DATA);
 
@@ -2438,18 +2459,17 @@ EOT;
         Gdn::set('Plugin.Minion.LastRun', date('Y-m-d H:i:s'));
         $sender->setData('Run', true);
 
-        $this->minionUpkeep($sender);
+        $this->runUpkeep($sender);
 
         $sender->render();
     }
 
     /**
-     * Minion upkeep trigger
+     * Run upkeep tasks
      *
-     * @param PluginController $sender
+     * @param Gdn_Controller $sender
      */
-    public function minionUpkeep($sender) {
-
+    protected function runUpkeep($sender) {
         // Currently operating as Minion
         $this->minionUserID = $this->getMinionUserID();
         $this->minion = Gdn::userModel()->getID($this->minionUserID);
