@@ -359,6 +359,7 @@ class MinionPlugin extends Gdn_Plugin {
 
         $this->checkFingerprintBan($sender);
         $this->checkAutoplay($sender);
+
         $performed = $this->checkCommands($sender);
         if (!$performed) {
             $this->checkMonitor($sender);
@@ -506,17 +507,19 @@ class MinionPlugin extends Gdn_Plugin {
             return;
         }
 
+        // Guests can't trigger this
         if (!Gdn::session()->isValid()) {
             return;
         }
-        $flagMeta = $this->getUserMeta(Gdn::session()->UserID, "FingerprintCheck", false);
 
-        // User already flagged
-        if ($flagMeta) {
+        // See if user is already flagged for checking at the next interval
+        $flagMeta = $this->getUserMeta(Gdn::session()->UserID, "FingerprintCheck", false);
+        if ($flagMeta && val('Plugin.Minion.FingerprintCheck', $flagMeta)) {
+            // Already flagged
             return;
         }
 
-        // Flag em'
+        // Not flagged yet, flag them
         $this->setUserMeta(Gdn::session()->UserID, "FingerprintCheck", 1);
     }
 
@@ -2442,9 +2445,9 @@ EOT;
             Gdn::set('Plugin.Minion.LastRun', date('Y-m-d H:i:s'));
         }
 
-        $lastMinionTime = $lastMinionDate ? strtotime($lastMinionDate) : time();
+        $lastMinionTime = $lastMinionDate ? strtotime($lastMinionDate) : null;
         if (!$lastMinionTime) {
-            $lastMinionTime = time();
+            $lastMinionTime = 0;
         }
 
         $sender->setData('Run', false);
@@ -2472,8 +2475,8 @@ EOT;
     protected function runUpkeep($sender) {
         // Currently operating as Minion
         $this->minionUserID = $this->getMinionUserID();
-        $this->minion = Gdn::userModel()->getID($this->minionUserID);
-        Gdn::session()->User = $this->minion;
+        $this->minion = Gdn::userModel()->getID($this->minionUserID, DATASET_TYPE_ARRAY);
+        Gdn::session()->User = (object)$this->minion;
         Gdn::session()->UserID = $this->minion['UserID'];
 
         $sender->setData('MinionUserID', $this->minionUserID);
@@ -2512,13 +2515,14 @@ EOT;
 
             $userID = $userRow['UserID'];
             $user = Gdn::userModel()->getID($userID);
+
+            // We don't need to worry about users that are already banned
             if ($user->Banned) {
                 continue;
             }
 
+            // Get user's fringerprint
             $userFingerprint = val('Fingerprint', $user, false);
-            $userRegistrationDate = $user->DateInserted;
-            $userRegistrationTime = strtotime($userRegistrationDate);
 
             // Unknown user fingerprint
             if (empty($userFingerprint)) {
@@ -2536,6 +2540,9 @@ EOT;
             $relatedUsers = Gdn::userModel()->getWhere(array(
                 'Fingerprint' => $userFingerprint
             ));
+
+            $userRegistrationDate = $user->DateInserted;
+            $userRegistrationTime = strtotime($userRegistrationDate);
 
             // Check if any users matching this fingerprint are banned
             $shouldBan = false;
