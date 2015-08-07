@@ -1565,9 +1565,6 @@ class MinionPlugin extends Gdn_Plugin {
 
             case 'phrase':
 
-                print_r($state);
-                die();
-
                 if (empty($state['Targets']['Phrase'])) {
                     $this->acknowledge(null, T('You must supply a valid phrase.'), 'custom', $state['Sources']['User'], array(
                         'Comment' => false
