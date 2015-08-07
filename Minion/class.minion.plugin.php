@@ -711,6 +711,9 @@ class MinionPlugin extends Gdn_Plugin {
             $state['Parsed']++;
 
             while ($state['Token'] !== false) {
+
+                // GATHER
+
                 if ($state['Gather']) {
 
                     $gatherNode = valr('Gather.Node', $state);
@@ -745,8 +748,6 @@ class MinionPlugin extends Gdn_Plugin {
                             $terminators = ['"' => true, '@' => false];
                             $terminator = $this->checkTerminator($state, (($firstPass) ? $terminators : null));
 
-                            // Add token
-
                             // Add space if there's something in Delta already
                             if (strlen($state['Gather']['Delta'])) {
                                 $state['Gather']['Delta'] .= ' ';
@@ -769,33 +770,23 @@ class MinionPlugin extends Gdn_Plugin {
 
                         case 'phrase':
 
-                            $terminator = val('Terminator', $state['Gather'], false);
+                            $terminators = ['"' => true];
+                            $terminator = $this->checkTerminator($state, (($firstPass) ? $terminators : null));
 
-                            if ($terminator && !is_bool($terminator)) {
-                                // If a terminator has been registered, and the first character in the token matches, chop it
-                                if (!strlen($state['Gather']['Delta']) && substr($state['Token'], 0, 1) == $terminator) {
-                                    $state['Token'] = substr($state['Token'], 1);
-                                }
-
-                                // If we've found our closing character
-                                if (($foundPosition = stripos($state['Token'], $terminator)) !== false) {
-                                    $state['Token'] = substr($state['Token'], 0, $foundPosition);
-                                    unset($state['Gather']['Terminator']);
-                                }
-                            }
-
-                            // Add token
+                            // Add space if there's something in Delta already
                             if (strlen($state['Gather']['Delta'])) {
                                 $state['Gather']['Delta'] .= ' ';
                             }
                             $state['Gather']['Delta'] .= $state['Token'];
                             $this->consume($state);
 
-                            // If we're closed, close up
+                            // Check if this is a real user already
                             $terminator = val('Terminator', $state['Gather'], false);
                             if (!$terminator && strlen($state['Gather']['Delta'])) {
-                                $state['Targets'][$gatherNode] = trim($state['Gather']['Delta']);
+                                $checkPhrase = trim($state['Gather']['Delta']);
+
                                 $state['Gather'] = false;
+                                $state['Targets'][$gatherNode] = $checkPhrase;
                                 break;
                             }
                             break;
@@ -1573,6 +1564,9 @@ class MinionPlugin extends Gdn_Plugin {
                 break;
 
             case 'phrase':
+
+                print_r($state);
+                die();
 
                 if (empty($state['Targets']['Phrase'])) {
                     $this->acknowledge(null, T('You must supply a valid phrase.'), 'custom', $state['Sources']['User'], array(
