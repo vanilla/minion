@@ -218,7 +218,7 @@ class MinionPlugin extends Gdn_Plugin {
         // Register default persona
         $this->persona('Minion', [
             'Name' => 'Minion',
-            'Photo' => 'http://cdn.vanillaforums.com/minion/minion.png',
+            'Photo' => 'https://c3409409.ssl.cf0.rackcdn.com/minion/minion.png',
             'Title' => 'Forum Robot',
             'Location' => 'Vanilla Forums - ' . time()
         ]);

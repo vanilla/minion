@@ -117,7 +117,7 @@ class ZombiesPlugin extends Gdn_Plugin {
       // Register persona
       $Sender->persona('Zombies', array(
          'Name'      => 'Red Queen',
-         'Photo'     => 'http://cdn.vanillaforums.com/minion/redqueen.png',
+         'Photo'     => 'https://c3409409.ssl.cf0.rackcdn.com/minion/redqueen.png',
          'Title'     => 'Malevolent AI',
          'Location'  => 'The Hive'
       ));
