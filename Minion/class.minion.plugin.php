@@ -93,6 +93,12 @@ class MinionPlugin extends Gdn_Plugin {
      */
     protected $persona;
 
+    /**
+     * List of names we respond to
+     * @var array
+     */
+    protected $aliases;
+
     /* Constants */
 
     // Toggles
@@ -107,7 +113,7 @@ class MinionPlugin extends Gdn_Plugin {
      * Toggle triggers
      * @var array
      */
-    protected $toggle_triggers = array();
+    protected $toggle_triggers = [];
 
     // Forces
     const FORCE_LOW = 'low';            // Warning, no points
@@ -125,13 +131,13 @@ class MinionPlugin extends Gdn_Plugin {
      * Force triggers
      * @var array
      */
-    protected $force_triggers = array();
+    protected $force_triggers = [];
 
     /**
      * User triggers
      * @var array
      */
-    protected $user_triggers = array();
+    protected $user_triggers = [];
 
     public function __construct() {
         parent::__construct();
@@ -289,7 +295,7 @@ class MinionPlugin extends Gdn_Plugin {
     /**
      * Get minion user object
      *
-     * @return object
+     * @return array
      */
     public function minion() {
         $this->startMinion();
@@ -345,6 +351,14 @@ class MinionPlugin extends Gdn_Plugin {
         // Register a persona
         if (!is_null($personaName) && !is_null($persona)) {
             $this->personas[$personaName] = $persona;
+            $this->aliases[] = val('Name', $persona);
+
+            // Add alternate aliases
+            $aliases = val('Alias', $persona, []);
+            if (!is_array($aliases)) {
+                $aliases = [];
+            }
+            $this->aliases = array_merge($this->aliases, $aliases);
             return;
         }
     }
@@ -392,7 +406,7 @@ class MinionPlugin extends Gdn_Plugin {
         $discussion = $sender->data('Discussion');
         $user = Gdn::session()->User;
 
-        $rules = array();
+        $rules = [];
         $this->EventArguments['Discussion'] = $discussion;
         $this->EventArguments['User'] = $user;
         $this->EventArguments['Rules'] = &$rules;
@@ -461,7 +475,7 @@ class MinionPlugin extends Gdn_Plugin {
 
         // Kicks
         if ($kickedUsers) {
-            $kickedUsersList = array();
+            $kickedUsersList = [];
             foreach ($kickedUsers as $kickedUserID => $kickedUser) {
                 $kickedUserName = val('Name', $kickedUser, null);
                 if (!$kickedUserName) {
@@ -598,24 +612,15 @@ class MinionPlugin extends Gdn_Plugin {
      */
     public function checkCommands($sender) {
 
-        // We allow minion to be called by any registered persona name
-        $minionNames = array();
-        foreach ($this->personas as $persona) {
-            $personaName = val('Name', $persona);
-            if ($personaName) {
-                $minionNames[] = $personaName;
-            }
-        }
-
         $type = 'Discussion';
-        $types = array();
+        $types = [];
 
         // Get the discussion and comment from args
         $types['Discussion'] = (array)$sender->EventArguments['Discussion'];
         if (!is_array($types['Discussion']['Attributes'])) {
             $types['Discussion']['Attributes'] = unserialize($types['Discussion']['Attributes']);
             if (!is_array($types['Discussion']['Attributes'])) {
-                $types['Discussion']['Attributes'] = array();
+                $types['Discussion']['Attributes'] = [];
             }
         }
 
@@ -626,7 +631,7 @@ class MinionPlugin extends Gdn_Plugin {
         }
         $object = $types[$type];
 
-        $actions = array();
+        $actions = [];
         $this->EventArguments['Actions'] = &$actions;
 
         // Get body text, and remove bad bytes
@@ -660,7 +665,7 @@ class MinionPlugin extends Gdn_Plugin {
             // Check if this is a call to the bot
             // Minion called by any other name is still Minion
             $minionCall = null;
-            foreach ($minionNames as $minionName) {
+            foreach ($this->aliases as $minionName) {
                 if (stringBeginsWith($objectLine, $minionName, true)) {
                     $minionCall = $minionName;
                     break;
@@ -685,8 +690,8 @@ class MinionPlugin extends Gdn_Plugin {
             // Define starting state
             $state = array(
                 'Body' => $strippedBody,
-                'Sources' => array(),
-                'Targets' => array(),
+                'Sources' => [],
+                'Targets' => [],
                 'Method' => null,
                 'Toggle' => null,
                 'Gather' => false,
@@ -1050,7 +1055,7 @@ class MinionPlugin extends Gdn_Plugin {
         unset($state);
 
         // Perform all actions
-        $performed = array();
+        $performed = [];
         foreach ($actions as $action) {
             $actionName = array_shift($action);
             $permission = array_shift($action);
@@ -1166,7 +1171,7 @@ class MinionPlugin extends Gdn_Plugin {
                         $state[$setting] = array($state[$setting]);
                     }
                 } else {
-                    $state[$setting] = array();
+                    $state[$setting] = [];
                 }
 
                 $state['Consume']['Container'] = &$state[$setting][];
@@ -1210,8 +1215,8 @@ class MinionPlugin extends Gdn_Plugin {
             return;
         }
 
-        $reasons = array();
-        $unset = array();
+        $reasons = [];
+        $unset = [];
         $fors = sizeof($state['For']);
         for ($i = 0; $i < $fors; $i++) {
             $for = $state['For'][$i];
@@ -1505,7 +1510,7 @@ class MinionPlugin extends Gdn_Plugin {
                 $expires = array_key_exists('Time', $state) ? strtotime("+" . $state['Time']) : null;
                 $microForce = val('Force', $state, null);
 
-                $kickedUsers = $this->monitoring($state['Targets']['Discussion'], 'Kicked', array());
+                $kickedUsers = $this->monitoring($state['Targets']['Discussion'], 'Kicked', []);
                 $kickedUsers[$user['UserID']] = array(
                     'Reason' => $reason,
                     'Name' => $user['Name'],
@@ -1543,7 +1548,7 @@ class MinionPlugin extends Gdn_Plugin {
                 }
                 $user = $state['Targets']['User'];
 
-                $kickedUsers = $this->monitoring($state['Targets']['Discussion'], 'Kicked', array());
+                $kickedUsers = $this->monitoring($state['Targets']['Discussion'], 'Kicked', []);
                 unset($kickedUsers[$user['UserID']]);
                 if (!sizeof($kickedUsers)) {
                     $kickedUsers = null;
@@ -1580,7 +1585,7 @@ class MinionPlugin extends Gdn_Plugin {
                 $expires = array_key_exists('Time', $state) ? strtotime("+" . $state['Time']) : null;
                 $microForce = val('Force', $state, null);
 
-                $bannedPhrases = $this->monitoring($state['Targets']['Discussion'], 'Phrases', array());
+                $bannedPhrases = $this->monitoring($state['Targets']['Discussion'], 'Phrases', []);
 
                 // Ban the phrase
                 if ($state['Toggle'] == MinionPlugin::TOGGLE_OFF) {
@@ -1638,7 +1643,7 @@ class MinionPlugin extends Gdn_Plugin {
 
             case 'status':
 
-                $rules = array();
+                $rules = [];
                 $this->EventArguments['Discussion'] = $state['Targets']['Discussion'];
                 $this->EventArguments['User'] = $state['Sources']['User'];
                 $this->EventArguments['Rules'] = &$rules;
@@ -1801,7 +1806,7 @@ class MinionPlugin extends Gdn_Plugin {
         if (!is_array($discussion['Attributes'])) {
             $discussion['Attributes'] = @unserialize($discussion['Attributes']);
             if (!is_array($discussion['Attributes'])) {
-                $discussion['Attributes'] = array();
+                $discussion['Attributes'] = [];
             }
         }
 
@@ -1846,7 +1851,7 @@ class MinionPlugin extends Gdn_Plugin {
 
         // KICK
         // Check expiry times and remove expired kicks
-        $kickedUsers = $this->monitoring($discussion, 'Kicked', array());
+        $kickedUsers = $this->monitoring($discussion, 'Kicked', []);
         $kuLen = sizeof($kickedUsers);
         foreach ($kickedUsers as $kickedUserID => $kickedOptions) {
             if (!is_null($kickedOptions['Expires']) && $kickedOptions['Expires'] <= time()) {
@@ -1892,7 +1897,7 @@ class MinionPlugin extends Gdn_Plugin {
 
         // PHRASE
         // Check expiry times and remove expired phrases
-        $bannedPhrases = $this->monitoring($discussion, 'Phrases', array());
+        $bannedPhrases = $this->monitoring($discussion, 'Phrases', []);
         $bpLen = sizeof($bannedPhrases);
         foreach ($bannedPhrases as $bannedPhraseWord => $bannedPhrase) {
             if (!is_null($bannedPhrase['Expires']) && $bannedPhrase['Expires'] <= time()) {
@@ -1964,12 +1969,12 @@ class MinionPlugin extends Gdn_Plugin {
      * @return mixed
      */
     public function monitoring(&$object, $attribute = null, $default = null) {
-        $attributes = val('Attributes', $object, array());
+        $attributes = val('Attributes', $object, []);
         if (!is_array($attributes) && strlen($attributes)) {
             $attributes = @unserialize($attributes);
         }
         if (!is_array($attributes)) {
-            $attributes = array();
+            $attributes = [];
         }
 
         svalr('Attributes', $object, $attributes);
@@ -2008,15 +2013,15 @@ class MinionPlugin extends Gdn_Plugin {
         $objectModelName = "{$type}Model";
         $objectModel = new $objectModelName();
 
-        $attributes = (array)val('Attributes', $object, array());
+        $attributes = (array)val('Attributes', $object, []);
         if (!is_array($attributes) && strlen($attributes)) {
             $attributes = @unserialize($attributes);
         }
         if (!is_array($attributes)) {
-            $attributes = array();
+            $attributes = [];
         }
 
-        $minion = (array)val('Minion', $attributes, array());
+        $minion = (array)val('Minion', $attributes, []);
         $minion['Monitor'] = true;
 
         if (is_array($options)) {
@@ -2075,7 +2080,7 @@ class MinionPlugin extends Gdn_Plugin {
      * @param type $options
      * @return string
      */
-    public function actionButton($row, $urlCode, $options = array()) {
+    public function actionButton($row, $urlCode, $options = []) {
         $reactionType = ReactionModel::reactionTypes($urlCode);
 
         $isHeading = false;
@@ -2105,7 +2110,7 @@ class MinionPlugin extends Gdn_Plugin {
         }
 
         if ($isHeading) {
-            static $types = array();
+            static $types = [];
             if (!isset($types[$urlCode])) {
                 $types[$urlCode] = ReactionModel::getReactionTypes(array('Class' => $urlCode, 'Active' => 1));
             }
@@ -2273,7 +2278,7 @@ EOT;
      */
     public function message($user, $discussion, $message, $options = null, $context = null) {
         if (!is_array($options)) {
-            $options = array();
+            $options = [];
         }
 
         // Options
@@ -2501,9 +2506,9 @@ EOT;
                 ->where('Name', 'Plugin.Minion.FingerprintCheck')
                 ->get();
 
-        $userStatusData = array();
+        $userStatusData = [];
         while ($userRow = $userMatchData->nextRow(DATASET_TYPE_ARRAY)) {
-            $userData = array();
+            $userData = [];
 
             $userID = $userRow['UserID'];
             $user = Gdn::userModel()->getID($userID);
@@ -2538,7 +2543,7 @@ EOT;
 
             // Check if any users matching this fingerprint are banned
             $shouldBan = false;
-            $banTriggerUsers = array();
+            $banTriggerUsers = [];
             while ($relatedUser = $relatedUsers->nextRow(DATASET_TYPE_ARRAY)) {
                 if ($relatedUser['Banned']) {
                     $relatedRegistrationDate = val('DateInserted', $relatedUser);
@@ -2586,7 +2591,7 @@ Reason: {Banned Aliases}
 A house divided will not stand
 {Ban Target}");
 
-                    $bannedAliases = array();
+                    $bannedAliases = [];
                     foreach ($banTriggerUsers as $bannedUserName => $bannedUser) {
                         $bannedAliases[] = userAnchor($bannedUser);
                     }
