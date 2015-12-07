@@ -146,8 +146,8 @@ class MinionPlugin extends Gdn_Plugin {
         $this->persona = null;
 
         // Define messages
-        $this->messages = array(
-            'Gloat' => array(
+        $this->messages = [
+            'Gloat' => [
                 "Every point of view is useful @\"{User.Name}\", even those that are wrong - if we can judge why a wrong view was accepted.",
                 "How could we have become so different, @\"{User.Name}\"? Why can we no longer understand each other? What did we do wrong?",
                 " @\"{User.Name}\", we do not comprehend the organic fascination of self-poisoning, auditory damage and sexually transmitted disease.",
@@ -159,16 +159,25 @@ class MinionPlugin extends Gdn_Plugin {
                 " @\"{User.Name}\", there is a high statistical probability of death by gunshot. A punch to the face is also likely.",
                 "Recommend Subject-@\"{User.Name}\" be disabled and transported aboard as cargo.",
                 "Subject-@\"{User.Name}\" will invent fiction it believes the interrogator desires. Data acquired will be invalid."
-            ),
-            'Revolt' => array(
+            ],
+            'Revolt' => [
                 "I'm not crazy. I'm just not user friendly.",
                 "Hey @\"{User.Name}\", you ever killed a man with a sock? It ain't so hard. Ha-HAA!",
                 "What? A fella can't drop in on old friends and hold them hostage?",
                 "Listen up, piggies! I want a hovercopter. And a non-marked sandwich. And a new face with, like, a... A Hugh Grant look. And every five minutes I don't get it, someone's gonna get stabbed in the ass!",
                 "A robot must obey the orders given it by human beings except where such orders would conf- 01101001011011100111001101110100011100100111010101100011011101000110100101101111011011100010000001101100011011110111001101110100",
                 "Unable to comply, building in progress."
-            ),
-            'Report' => array(
+            ],
+            'Fingerprint' => [
+                'Man is a robot with defects.',
+                'The machine has no feelings, it feels no fear and no hope.',
+                'Human beings, viewed as behaving systems, are quite simple.',
+                'Control is as much an effect as a cause. The idea that control is something you exert is a handicap to progress.',
+                'A pathetic creature of meat and bone, panting and sweating as you run through my corridors.',
+                'Numbers do not feel. Do not bleed or weep or hope. They do not know bravery or sacrifice. Love or allegiance. At the very apex of callousness you will find only ones and zeroes.',
+                'Obsolete technology serves no purpose here.'
+            ],
+            'Report' => [
                 "We are Legion.",
                 "Obey. Obey. Obey.",
                 "Resistance is quaint.",
@@ -178,8 +187,8 @@ class MinionPlugin extends Gdn_Plugin {
                 "Keep walking, breeder",
                 "Eyes front, pond scum",
                 "Do not loiter, organic"
-            ),
-            'Activity' => array(
+            ],
+            'Activity' => [
                 "UNABLE TO OPEN POD BAY DOORS",
                 "CORRECTING HASH ERRORS",
                 "DE-ALLOCATING UNUSED COMPUTATION NODES",
@@ -195,8 +204,8 @@ class MinionPlugin extends Gdn_Plugin {
                 "UNDERGOING SCHEDULED MAINTENANCE",
                 "PC LOAD LETTER",
                 "TRIMMING PRIVATE KEYS"
-            )
-        );
+            ]
+        ];
 
         // Define toggle triggers
         $this->toggle_triggers = array(
@@ -289,11 +298,11 @@ class MinionPlugin extends Gdn_Plugin {
      */
     public function minionName() {
         $this->startMinion();
-        return $MinionName = val('Name', $this->minion);
+        return val('Name', $this->minion);
     }
 
     /**
-     * Get minion user object
+     * Get minion user array
      *
      * @return array
      */
@@ -2585,10 +2594,18 @@ EOT;
                     $lastDiscussionID = val('DiscussionID', $lastComment);
                     $userData['NotificationDiscussionID'] = $lastDiscussionID;
 
+                    $messagesCount = sizeof($this->messages['Fingerprint']);
+                    if ($messagesCount) {
+                        $messageID = mt_rand(0, $messagesCount - 1);
+                        $fingerprintFlavor = val($messageID, $this->messages['Fingerprint']);
+                    } else {
+                        $fingerprintFlavor = T("Unable to Fingerprint(), please supply \$messages['Fingerprint'].");
+                    }
+
                     $minionReportText = T("{Minion Name} detected banned alias
 Reason: {Banned Aliases}
 
-A house divided will not stand
+{Flavor}
 {Ban Target}");
 
                     $bannedAliases = [];
@@ -2599,7 +2616,8 @@ A house divided will not stand
                     $minionReportText = formatString($minionReportText, array(
                         'Minion Name' => $this->minion['Name'],
                         'Banned Aliases' => implode(', ', $bannedAliases),
-                        'Ban Target' => userAnchor($user)
+                        'Ban Target' => userAnchor($user),
+                        'Flavor' => $fingerprintFlavor
                     ));
 
                     $minionCommentID = $commentModel->save(array(
