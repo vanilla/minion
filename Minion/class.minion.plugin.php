@@ -128,6 +128,12 @@ class MinionPlugin extends Gdn_Plugin {
     );
 
     /**
+     * Upkeep frequency
+     * @var integer minutes
+     */
+    const MINION_UPKEEP_FREQUENCY = 5;
+
+    /**
      * Force triggers
      * @var array
      */
@@ -2459,7 +2465,7 @@ EOT;
         $sender->setData('Run', false);
 
         $elapsed = time() - $lastMinionTime;
-        $elapsedMinimum = c('Plugins.Minion.MinFrequency', 5 * 60);
+        $elapsedMinimum = c('Plugins.Minion.MinFrequency', self::MINION_UPKEEP_FREQUENCY) * 60;
         if ($elapsed < $elapsedMinimum) {
             return $sender->render();
         }
