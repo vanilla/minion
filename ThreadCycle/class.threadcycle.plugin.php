@@ -91,7 +91,7 @@ class ThreadCyclePlugin extends Gdn_Plugin {
                 'divisions' => 10,
                 'divtype' => 'decimal',
                 'round' => 1,
-                'verbs' => array('zooming by', 'blasting along', 'careening by', 'speeding through')
+                'verbs' => array('zooming by', 'blasting along', 'careening by', 'speeding through space')
             ),
             'transwarp' => array(
                 'min' => 10,
@@ -155,7 +155,7 @@ class ThreadCyclePlugin extends Gdn_Plugin {
                     $speed = val($speed, $engineInfo['replace']);
                 }
                 if (!$realSpeed) {
-                    $speedcontext['format'] = 'drifing in space';
+                    $speedcontext['format'] = 'drifting in space';
                 }
                 if (array_key_exists('verbs', $engineInfo)) {
                     $verbKey = array_rand($engineInfo['verbs']);
@@ -279,7 +279,7 @@ class ThreadCyclePlugin extends Gdn_Plugin {
      *
      * @param DiscussionModel $sender
      */
-    public function DiscussionModel_AfterSaveDiscussion_Handler($sender) {
+    public function discussionModel_afterSaveDiscussion_handler($sender) {
         $discussionID = $sender->EventArguments['DiscussionID'];
         $values = $sender->EventArguments['FormPostValues'];
 
@@ -309,7 +309,7 @@ class ThreadCyclePlugin extends Gdn_Plugin {
      *
      * @param DiscussionModel $sender
      */
-    public function DiscussionModel_AfterSetField_Handler($sender) {
+    public function discussionModel_afterSetField_handler($sender) {
         $discussionID = $sender->EventArguments['DiscussionID'];
         $setfield = $sender->EventArguments['SetField'];
 
@@ -630,8 +630,12 @@ class ThreadCyclePlugin extends Gdn_Plugin {
      */
     protected static function gcd($a,$b) {
         $a = abs($a); $b = abs($b);
-        if( $a < $b) list($b,$a) = Array($a,$b);
-        if( $b == 0) return $a;
+        if( $a < $b) {
+            list($b,$a) = Array($a,$b);
+        }
+        if( $b == 0) {
+            return $a;
+        }
         $r = $a % $b;
         while($r > 0) {
             $a = $b;
@@ -658,7 +662,7 @@ class ThreadCyclePlugin extends Gdn_Plugin {
      *
      * @param MinionPlugin $sender
      */
-    public function MinionPlugin_Token_Handler($sender) {
+    public function minionPlugin_token_handler($sender) {
         $state = &$sender->EventArguments['State'];
 
         if (!$state['Method'] && in_array($state['CompareToken'], array('recycle'))) {
@@ -719,7 +723,7 @@ class ThreadCyclePlugin extends Gdn_Plugin {
      *
      * @param MinionPlugin $sender
      */
-    public function MinionPlugin_Command_Handler($sender) {
+    public function minionPlugin_command_handler($sender) {
         $actions = &$sender->EventArguments['Actions'];
         $state = &$sender->EventArguments['State'];
 
@@ -746,7 +750,7 @@ class ThreadCyclePlugin extends Gdn_Plugin {
      *
      * @param MinionPlugin $sender
      */
-    public function MinionPlugin_Action_Handler($sender) {
+    public function minionPlugin_action_handler($sender) {
         $action = $sender->EventArguments['Action'];
         $state = $sender->EventArguments['State'];
 
@@ -962,7 +966,7 @@ class ThreadCyclePlugin extends Gdn_Plugin {
      *
      * @param MinionPlugin $sender
      */
-    public function MinionPlugin_Monitor_Handler($sender) {
+    public function minionPlugin_monitor_handler($sender) {
         $discussion = $sender->EventArguments['Discussion'];
         $threadCycle = $sender->monitoring($discussion, 'ThreadCycle', false);
         if (!$threadCycle) {
@@ -983,7 +987,7 @@ class ThreadCyclePlugin extends Gdn_Plugin {
      *
      * @param MinionPlugin $sender
      */
-    public function MinionPlugin_Sanctions_Handler($sender) {
+    public function minionPlugin_sanctions_handler($sender) {
 
         // Show a warning if there are rules in effect
 
