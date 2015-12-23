@@ -8,7 +8,7 @@
 $PluginInfo['Minion'] = array(
     'Name' => 'Minion',
     'Description' => "Creates a 'minion' that performs adminstrative tasks automatically and on command.",
-    'Version' => '2.2.0',
+    'Version' => '2.2.1',
     'MobileFriendly' => true,
     'Author' => "Tim Gunter",
     'AuthorEmail' => 'tim@vanillaforums.com',
@@ -779,6 +779,11 @@ class MinionPlugin extends Gdn_Plugin {
                             $terminator = val('Terminator', $state['Gather'], false);
                             if (!$terminator && strlen($state['Gather']['Delta'])) {
                                 $checkUser = trim($state['Gather']['Delta']);
+                                if ($checkUser == "whole thread") {
+                                    $state['Gather'] = false;
+                                    $state['Targets'][$gatherNode] = "thread";
+                                    break;
+                                }
                                 $gatherUser = Gdn::userModel()->getByUsername($checkUser);
                                 if ($gatherUser) {
                                     $state['Gather'] = false;

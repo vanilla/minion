@@ -108,6 +108,35 @@ class MinionWarnings extends Gdn_Plugin {
                     break;
                 }
 
+                $discussion = $state['Targets']['Discussion'];
+                $targetUser = $state['Targets']['User'];
+
+                $warnings = [];
+
+                if ($targetUser === "thread") {
+                    $commentModel = new CommentModel();
+                    $comments = $commentModel->getWhere([
+                        'DiscussionID' => $discussion['DiscussionID']
+                    ]);
+
+                    foreach ($comments as $comment) {
+                        $user = Gdn::userModel()->getID($comment['InsertUserID']);
+                        if (Gdn::userModel()->checkPermission($user, ['Garden.Settings.Manage','Garden.Moderation.Manage'])) {
+                            continue;
+                        }
+                        $warnings[] = [
+                            'user' => $user,
+                            'comment' => $comment
+                        ];
+                    }
+                } else {
+                    $recordComment = val('Comment', $state['Targets'], null);
+                    $warnings[] = [
+                        'user' => $targetUser,
+                        'comment' => $recordComment
+                    ];
+                }
+
                 $force = val('Force', $state, MinionPlugin::FORCE_MEDIUM);
 
                 $options = array(
@@ -133,18 +162,22 @@ class MinionWarnings extends Gdn_Plugin {
 
                 $options['Invoker'] = $state['Sources']['User'];
 
-                $recordComment = val('Comment', $state['Targets'], null);
-                $punished = $sender->punish(
-                    $state['Targets']['User'],
-                    $state['Targets']['Discussion'],
-                    $recordComment,
-                    $force,
-                    $options
-                );
+                $gloat = count($warnings) > 1 ? false : true;
+                foreach ($warnings as $warning) {
+                    $punished = $sender->punish(
+                        $warning['user'],
+                        $discussion,
+                        $warning['comment'],
+                        $force,
+                        $options
+                    );
 
-                $gloatReason = val('GloatReason', $sender->EventArguments);
-                if ($punished && $gloatReason) {
-                    $sender->gloat($state['Targets']['User'], $state['Sources']['Discussion'], $gloatReason);
+                    if ($gloat) {
+                        $gloatReason = val('GloatReason', $sender->EventArguments);
+                        if ($punished && $gloatReason) {
+                            $sender->gloat($state['Targets']['User'], $state['Sources']['Discussion'], $gloatReason);
+                        }
+                    }
                 }
 
                 break;
