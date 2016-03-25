@@ -137,6 +137,13 @@ class MinionWarnings extends Gdn_Plugin {
                     ];
                 }
 
+                if (!count($warnings)) {
+                    $sender->acknowledge(null, T('You must supply a valid target user.'), 'custom', $state['Sources']['User'], array(
+                        'Comment' => false
+                    ));
+                    break;
+                }
+
                 $force = val('Force', $state, MinionPlugin::FORCE_MEDIUM);
 
                 $options = array(

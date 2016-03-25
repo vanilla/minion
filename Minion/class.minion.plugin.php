@@ -1322,7 +1322,7 @@ class MinionPlugin extends Gdn_Plugin {
             'balance' => 1
         );
         $spec = 'object=-classid-type, -codebase; embed=type(oneof=application/x-shockwave-flash)';
-        $cleaned = htmLawed($html, $config, $spec);
+        $cleaned = Htmlawed::filter($html, $config, $spec);
         $cleaned = utf8_decode($cleaned);
 
         $dom = new DOMDocument();
@@ -1791,8 +1791,9 @@ class MinionPlugin extends Gdn_Plugin {
 
             $userName = $matches[1];
             $user = Gdn::userModel()->getByUsername($userName);
-            if (!$user)
+            if (!$user) {
                 return;
+            }
 
             $state['Targets']['User'] = (array)$user;
             $recordID = $matches[2];
