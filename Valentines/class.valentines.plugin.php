@@ -216,18 +216,18 @@ class ValentinesPlugin extends Gdn_Plugin {
       if (!$UserID) return;
 
       // Remove Discussions.Add permissions
-      $Permissions = Gdn_Format::Unserialize($User->Permissions);
+      $Permissions = dbdecode($User->Permissions);
 
       if (Gdn::PluginManager()->CheckPlugin('Warnings2')) {
          if (!GetValue('Punished', $User)) return;
 
          // Remove Discussions.Add permissions
-         $Permissions = Gdn_Format::Unserialize($User->Permissions);
+         $Permissions = dbdecode($User->Permissions);
          if (!array_key_exists('Vanilla.Discussions.Add', $Permissions) || !is_array($Permissions['Vanilla.Discussions.Add']))
             $Permissions['Vanilla.Discussions.Add'] = array();
 
          $Permissions['Vanilla.Discussions.Add'][] = $this->LoungeID;
-         $User->Permissions = Gdn_Format::Serialize($Permissions);
+         $User->Permissions = dbencode($Permissions);
       }
    }
 
@@ -1800,7 +1800,7 @@ STATISTICS;
       $Comment = (array)$Sender->EventArguments['Comment'];
       $Attributes = GetValue('Attributes', $Comment);
       if (!is_array($Attributes))
-         $Attributes = @unserialize($Attributes);
+         $Attributes = dbdecode($Attributes);
       $Comment['Attributes'] = $Attributes;
 
       $this->AddDesiredCSS($Sender, $Comment);
@@ -1815,7 +1815,7 @@ STATISTICS;
       $Discussion = (array)$Sender->EventArguments['Discussion'];
       $Attributes = GetValue('Attributes', $Discussion);
       if (!is_array($Attributes))
-         $Attributes = @unserialize($Attributes);
+         $Attributes = dbdecode($Attributes);
       $Discussion['Attributes'] = $Attributes;
 
       $this->AddDesiredCSS($Sender, $Discussion);
