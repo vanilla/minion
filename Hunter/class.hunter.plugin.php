@@ -379,7 +379,7 @@ class HunterPlugin extends Gdn_Plugin {
       $Comment = (array)$Sender->EventArguments['Comment'];
       $Attributes = GetValue('Attributes', $Comment);
       if (!is_array($Attributes))
-         $Attributes = @unserialize($Attributes);
+         $Attributes = dbdecode($Attributes);
       $Comment['Attributes'] = $Attributes;
 
       $this->AddHunterCSS($Sender, $Comment);
@@ -392,7 +392,7 @@ class HunterPlugin extends Gdn_Plugin {
       $Discussion = (array)$Sender->EventArguments['Discussion'];
       $Attributes = GetValue('Attributes', $Comment);
       if (!is_array($Attributes))
-         $Attributes = @unserialize($Attributes);
+         $Attributes = dbdecode($Attributes);
       $Discussion['Attributes'] = $Attributes;
 
       $this->AddHunterCSS($Sender, $Discussion);

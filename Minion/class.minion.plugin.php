@@ -633,7 +633,7 @@ class MinionPlugin extends Gdn_Plugin {
         // Get the discussion and comment from args
         $types['Discussion'] = (array)$sender->EventArguments['Discussion'];
         if (!is_array($types['Discussion']['Attributes'])) {
-            $types['Discussion']['Attributes'] = unserialize($types['Discussion']['Attributes']);
+            $types['Discussion']['Attributes'] = dbdecode($types['Discussion']['Attributes']);
             if (!is_array($types['Discussion']['Attributes'])) {
                 $types['Discussion']['Attributes'] = [];
             }
@@ -1825,7 +1825,7 @@ class MinionPlugin extends Gdn_Plugin {
         // Get the discussion and comment from args
         $discussion = (array)$sender->EventArguments['Discussion'];
         if (!is_array($discussion['Attributes'])) {
-            $discussion['Attributes'] = @unserialize($discussion['Attributes']);
+            $discussion['Attributes'] = dbdecode($discussion['Attributes']);
             if (!is_array($discussion['Attributes'])) {
                 $discussion['Attributes'] = [];
             }
@@ -1992,7 +1992,7 @@ class MinionPlugin extends Gdn_Plugin {
     public function monitoring(&$object, $attribute = null, $default = null) {
         $attributes = val('Attributes', $object, []);
         if (!is_array($attributes) && strlen($attributes)) {
-            $attributes = @unserialize($attributes);
+            $attributes = dbdecode($attributes);
         }
         if (!is_array($attributes)) {
             $attributes = [];
@@ -2036,7 +2036,7 @@ class MinionPlugin extends Gdn_Plugin {
 
         $attributes = (array)val('Attributes', $object, []);
         if (!is_array($attributes) && strlen($attributes)) {
-            $attributes = @unserialize($attributes);
+            $attributes = dbdecode($attributes);
         }
         if (!is_array($attributes)) {
             $attributes = [];
