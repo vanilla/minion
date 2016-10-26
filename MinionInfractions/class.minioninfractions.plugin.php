@@ -32,7 +32,7 @@ $PluginInfo['MinionInfractions'] = array(
  * @author Tim Gunter <tim@vanillaforums.com>
  * @package minion
  */
-class MinionInfractions extends Gdn_Plugin {
+class MinionInfractionsPlugin extends Gdn_Plugin {
 
     /**
      * Hook for E:Token from MinionPlugin

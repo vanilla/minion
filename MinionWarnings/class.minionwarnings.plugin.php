@@ -32,7 +32,7 @@ $PluginInfo['MinionWarnings'] = array(
  * @author Tim Gunter <tim@vanillaforums.com>
  * @package minion
  */
-class MinionWarnings extends Gdn_Plugin {
+class MinionWarningsPlugin extends Gdn_Plugin {
 
     /**
      * Hook for E:Token from MinionPlugin
@@ -42,7 +42,7 @@ class MinionWarnings extends Gdn_Plugin {
      *
      * @param MinionPlugin $sender
      */
-    public function MinionPlugin_Token_Handler($sender) {
+    public function minionPlugin_token_handler($sender) {
         $state = &$sender->EventArguments['State'];
 
         // Warnings
@@ -64,7 +64,7 @@ class MinionWarnings extends Gdn_Plugin {
      *
      * @param MinionPlugin $sender
      */
-    public function MinionPlugin_Command_Handler($sender) {
+    public function minionPlugin_command_handler($sender) {
         $actions = &$sender->EventArguments['Actions'];
         $state = &$sender->EventArguments['State'];
 
@@ -92,7 +92,7 @@ class MinionWarnings extends Gdn_Plugin {
      *
      * @param MinionPlugin $sender
      */
-    public function MinionPlugin_Action_Handler($sender) {
+    public function minionPlugin_action_handler($sender) {
         $action = $sender->EventArguments['Action'];
         $state = $sender->EventArguments['State'];
 
@@ -198,7 +198,7 @@ class MinionWarnings extends Gdn_Plugin {
      *
      * @param MinionPlugin $sender
      */
-    public function MinionPlugin_Punish_Handler($sender) {
+    public function minionPlugin_punish_handler($sender) {
         $punished = &$sender->EventArguments['Punished'];
         $user = &$sender->EventArguments['User'];
         $discussion = &$sender->EventArguments['Discussion'];
@@ -318,7 +318,7 @@ class MinionWarnings extends Gdn_Plugin {
      *
      * @param HunterPlugin $sender
      */
-    public function HunterPlugin_FugitiveCatch_Handler($sender) {
+    public function hunterPlugin_fugitiveCatch_handler($sender) {
         $user = $sender->EventArguments['User'];
 
         $points = $this->JailThreshold;
