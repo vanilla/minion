@@ -169,7 +169,7 @@ class KidnappersPlugin extends Gdn_Plugin {
       // Register persona
       $Sender->persona('Kidnapper', array(
          'Name'      => 'Donbot',
-         'Photo'     => 'https://c3409409.ssl.cf0.rackcdn.com/minion/donbot.png',
+         'Photo'     => 'https://images.v-cdn.net/minion/donbot.png',
          'Title'     => 'Doin crimes',
          'Location'  => "Fronty's Meat Market"
       ));

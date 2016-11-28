@@ -192,7 +192,11 @@ class MinionPlugin extends Gdn_Plugin {
                 "Move along, meatbag",
                 "Keep walking, breeder",
                 "Eyes front, pond scum",
-                "Do not loiter, organic"
+                "Do not loiter, organic",
+                "Prepare to be scanned",
+                "Stay on the path, fleshsack",
+                "No sudden movements",
+                "State your business"
             ],
             'Activity' => [
                 "UNABLE TO OPEN POD BAY DOORS",
@@ -221,10 +225,20 @@ class MinionPlugin extends Gdn_Plugin {
 
         // Define force triggers
         $this->force_triggers = array(
-            self::FORCE_LOW => t('Minion.Trigger.Forces.Low', array('stun', 'blanks', 'tase', 'taser', 'taze', 'tazer', 'gently', 'gentle', 'peacekeeper')),
-            self::FORCE_MEDIUM => t('Minion.Trigger.Forces.Medium', array('power', 'cook', 'simmer', 'stern', 'sternly', 'minor')),
-            self::FORCE_HIGH => t('Minion.Trigger.Forces.High', array('volts', 'extreme', 'slugs', 'broil', 'sear', 'strong', 'strongly', 'major')),
-            self::FORCE_LETHAL => t('Minion.Trigger.Forces.Lethal', array('kill', 'lethal', 'nuke', 'nuclear', 'destroy')),
+            self::FORCE_LOW => t('Minion.Trigger.Forces.Low', ['stun',
+                'blanks', 'tase', 'taser', 'taze', 'tazer', 'gently', 'gentle', 'peacekeeper'
+            ]),
+            self::FORCE_MEDIUM => t('Minion.Trigger.Forces.Medium', [
+                'power', 'cook', 'simmer', 'stern', 'sternly', 'minor', 'rough', 'roughly', 'wound'
+            ]),
+            self::FORCE_HIGH => t('Minion.Trigger.Forces.High', [
+                'volts', 'extreme', 'slugs', 'broil', 'sear', 'strong', 'strongly', 'major', 'maim'
+            ]),
+            self::FORCE_LETHAL => t('Minion.Trigger.Forces.Lethal', [
+                'kill', 'lethal', 'nuke', 'nuclear', 'destroy'
+            ]),
+
+            // shoot, weapon, weapons, posture, free, defcon, phasers, engage
         );
 
         // Define user triggers
@@ -239,7 +253,7 @@ class MinionPlugin extends Gdn_Plugin {
         // Register default persona
         $this->persona('Minion', [
             'Name' => 'Minion',
-            'Photo' => 'https://c3409409.ssl.cf0.rackcdn.com/minion/minion.png',
+            'Photo' => 'https://images.v-cdn.net/minion/minion.png',
             'Title' => 'Forum Robot',
             'Location' => 'Vanilla Forums - ' . time()
         ]);

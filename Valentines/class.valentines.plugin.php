@@ -241,7 +241,7 @@ class ValentinesPlugin extends Gdn_Plugin {
       // Register persona
       $Sender->persona('Valentines', array(
          'Name'      => 'Robot Cupid',
-         'Photo'     => 'https://c3409409.ssl.cf0.rackcdn.com/minion/valentines.jpg',
+         'Photo'     => 'https://images.v-cdn.net/minion/valentines.jpg',
          'Title'     => 'Happiness Droid',
          'Location'  => 'Cloud Nine'
       ));
@@ -1174,7 +1174,7 @@ EXTENDEDVALENTINES;
 
          $CacheMessage = <<<CACHEVALENTINES
 <div class="FallenCupid" data-cacheid="{CacheID}">
-   <img src="https://c3409409.ssl.cf0.rackcdn.com/minion/fallencupid.png" />
+   <img src="https://images.v-cdn.net/minion/fallencupid.png" />
    <p>Unidentified Aerial Target has been detected and destroyed. Moving to recover debris at crash site.</p>
    <div><a class="FallenCupidLink" href="{CacheUrl}" rel="{CacheID}">Search the debris for arrows</a></div>
 </div>
