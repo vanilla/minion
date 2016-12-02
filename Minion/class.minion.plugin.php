@@ -94,6 +94,12 @@ class MinionPlugin extends Gdn_Plugin {
     protected $persona;
 
     /**
+     * Priority of queued persona
+     * @var integer
+     */
+    protected $personPriority;
+
+    /**
      * List of names we respond to
      * @var array
      */
@@ -337,7 +343,7 @@ class MinionPlugin extends Gdn_Plugin {
      * @param string $personaName
      * @param array $persona
      */
-    public function persona($personaName = null, $persona = null) {
+    public function persona($personaName = null, $persona = null, $priority = 100) {
 
         // Get current person
         if (is_null($personaName)) {
@@ -366,15 +372,18 @@ class MinionPlugin extends Gdn_Plugin {
             $this->minion = Gdn::userModel()->getID($this->minionUserID, DATASET_TYPE_ARRAY);
         }
 
-        // Apply an existing persona
+        // Queue an existing persona
         if (!is_null($personaName) && is_null($persona)) {
             // Get persona
-            $applyPersona = val($personaName, $this->personas, null);
-            if (is_null($applyPersona)) {
+            $queuePersona = val($personaName, $this->personas, null);
+            if (is_null($queuePersona)) {
                 return;
             }
 
-            $this->persona = $personaName;
+            if ($priority >= $this->personPriority) {
+                $this->persona = $personaName;
+                $this->personPriority = $priority;
+            }
         }
 
         // Register a persona
