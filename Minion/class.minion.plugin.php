@@ -1305,7 +1305,6 @@ class MinionPlugin extends Gdn_Plugin {
             saveToConfig('Garden.Format.Mentions', false, false);
         }
 
-        Gdn::pluginManager()->getPluginInstance('HtmLawed', Gdn_PluginManager::ACCESS_PLUGINNAME);
         $body = $item['Body'];
         $body = preg_replace('!\[spoiler\]!i', "\n[spoiler]\n", $body);
         $body = preg_replace('!\[/spoiler\]!i', "\n[/spoiler]\n", $body);
