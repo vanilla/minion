@@ -176,7 +176,9 @@ class ThreadCyclePlugin extends Gdn_Plugin {
 
         // Find the last page of commenters
         $commentsPerPage = c('Vanilla.Comments.PerPage', 40);
-        $commenters = Gdn::SQL()->Select('InsertUserID', 'DISTINCT', 'UserID')
+        $commenters = Gdn::SQL()
+                        ->Select('InsertUserID', 'DISTINCT', 'UserID')
+                        ->Select('DateInserted')
                         ->From('Comment')
                         ->Where('DiscussionID', $discussionID)
                         ->OrderBy('DateInserted', 'desc')
