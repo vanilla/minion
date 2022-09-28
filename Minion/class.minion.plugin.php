@@ -2458,7 +2458,7 @@ EOT;
     public function gdn_statistics_analyticsTick_handler($sender) {
         $controller = Gdn::controller();
         if ($controller) {
-            $this->minionUpkeep();
+            $this->minionUpkeep($controller);
         }
     }
 
