@@ -2456,7 +2456,10 @@ EOT;
      * @param Gdn_Statistics $sender
      */
     public function gdn_statistics_analyticsTick_handler($sender) {
-        $this->minionUpkeep(Gdn::controller());
+        $controller = Gdn::controller();
+        if ($controller) {
+            $this->minionUpkeep();
+        }
     }
 
     /**
