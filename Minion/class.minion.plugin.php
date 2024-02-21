@@ -495,7 +495,7 @@ class MinionPlugin extends Gdn_Plugin {
         $type = val('Type', $sender->EventArguments, 'rules');
 
         // Nothing happening?
-        if (!($kickedUsers | $bannedPhrases | $force)) {
+        if (empty($kickedUsers) && empty($bannedPhrases) && empty($force)) {
             return;
         }
 
